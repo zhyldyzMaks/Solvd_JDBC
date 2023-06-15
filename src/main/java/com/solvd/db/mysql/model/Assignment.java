@@ -7,18 +7,18 @@ public class Assignment {
     private String name;
     private Date dueDate;
     private int score;
-    private long classId;
+    private ClassTable classId;
 
     public Assignment(){}
 
-    public Assignment(String name, Date dueDate, int score, long classId) {
+    public Assignment(String name, Date dueDate, int score, ClassTable classId) {
         this.name = name;
         this.dueDate = dueDate;
         this.score = score;
         this.classId = classId;
     }
 
-    public Assignment(long id, String name, Date dueDate, int score, long classId) {
+    public Assignment(long id, String name, Date dueDate, int score, ClassTable classId) {
         this.id = id;
         this.name = name;
         this.dueDate = dueDate;
@@ -58,11 +58,11 @@ public class Assignment {
         this.score = score;
     }
 
-    public long getClassId() {
+    public ClassTable getClassId() {
         return classId;
     }
 
-    public void setClassId(long classId) {
+    public void setClassId(ClassTable classId) {
         this.classId = classId;
     }
 

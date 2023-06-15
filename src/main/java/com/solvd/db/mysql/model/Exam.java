@@ -6,16 +6,16 @@ public class Exam {
     private long id;
     private String name;
     private Date date;
-    private long course;
+    private Course course;
 
     public Exam(){}
 
-    public Exam(String name, Date date, long course) {
+    public Exam(String name, Date date, Course course) {
         this.name = name;
         this.date = date;
         this.course = course;
     }
-    public Exam(long id, String name, Date date, long course) {
+    public Exam(long id, String name, Date date, Course course) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -46,11 +46,11 @@ public class Exam {
         this.date = date;
     }
 
-    public long getCourse() {
+    public Course getCourse() {
         return course;
     }
 
-    public void setCourse(long course) {
+    public void setCourse(Course course) {
         this.course = course;
     }
 

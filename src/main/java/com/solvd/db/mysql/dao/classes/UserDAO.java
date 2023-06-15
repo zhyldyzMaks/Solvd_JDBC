@@ -1,52 +1,58 @@
 package com.solvd.db.mysql.dao.classes;
 
+import com.solvd.db.mysql.dao.AbstractDAO;
 import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.User;
 import com.solvd.db.utils.ConnectionManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDAO implements IDAO<User> {
-    PreparedStatement preparedStatement = null;
-    ResultSet resultSet = null;
+public class UserDAO extends AbstractDAO<User> implements IDAO<User> {
+    private static final Logger logger = LogManager.getLogger(UserDAO.class);
+
+    public static final String insertQuery = "insert into users (username, password) values(?,?)";
+
+    public static final String updateQuery = "update users set username = ?, password = ? where id = ?";
 
     public boolean create(User user) {
         try ( Connection connection = ConnectionManager.getConnection()) {
-            String insertQuery = "insert into users (username, password) " +
-                    "values(?,?)";
-            preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
 
             if (preparedStatement.executeUpdate()>0){
-                resultSet = preparedStatement.getGeneratedKeys();
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
                 if (resultSet.next()){
                     long generatedId = resultSet.getLong(1);
-                    System.out.println("User created with ID: " + generatedId);
+                    logger.info("User created with ID: " + generatedId);
                 }
             } else {
-                System.out.println("Failed to create user.");
+                logger.warn("Failed to create user.");
                 return false;
             }
-    } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            logger.error("Error while creating user.", e);
         } return false;
     }
 
     @Override
-    public User getById(long id) throws SQLException {
+    public User getById(long id){
         User user = new User();
         try ( Connection connection = ConnectionManager.getConnection()) {
-            preparedStatement = connection.prepareStatement("select * from users where id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from users where id = ?");
             preparedStatement.setLong(1, id);
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 user.setId(resultSet.getLong("id"));
                 user.setUsername(resultSet.getString("username"));
                 user.setPassword(resultSet.getString("password"));
             }
+        } catch (SQLException e) {
+            logger.error("Error while retrieving user.", e);
         }
         return user;
     }
@@ -54,8 +60,8 @@ public class UserDAO implements IDAO<User> {
     public List<User> getAll() {
         List<User> allUsers = new ArrayList<>();
         try(Connection connection = ConnectionManager.getConnection()){
-            preparedStatement = connection.prepareStatement("select * from users");
-            resultSet = preparedStatement.executeQuery();
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from users");
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()){
                 int id = resultSet.getInt("id");
@@ -66,7 +72,7 @@ public class UserDAO implements IDAO<User> {
                 allUsers.add(user);
             }
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.error("Error while retrieving all users.", e);
         }
         return allUsers;
     }
@@ -74,8 +80,7 @@ public class UserDAO implements IDAO<User> {
     @Override
     public boolean update(User user) {
         try (Connection connection = ConnectionManager.getConnection()) {
-            String updateQuery = "update users set username = ?, password = ? where id = ?";
-            preparedStatement = connection.prepareStatement(updateQuery);
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setLong(3, user.getId());
@@ -85,16 +90,19 @@ public class UserDAO implements IDAO<User> {
             return updatedRows > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while updating user.", e);
         }return false;
     }
     @Override
-    public boolean delete(long id) throws SQLException {
+    public boolean delete(long id){
         try(Connection connection = ConnectionManager.getConnection()){
-            preparedStatement = connection.prepareStatement("delete from users where id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("delete from users where id = ?");
             preparedStatement.setLong(1,id);
             int deletedRows = preparedStatement.executeUpdate();
             return  deletedRows > 0;
+        } catch (SQLException e) {
+            logger.error("Error while deleting user.", e);
         }
+        return false;
     }
 }

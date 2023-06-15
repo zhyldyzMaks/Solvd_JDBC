@@ -4,17 +4,17 @@ public class Major {
     private long id;
     private String name;
     private String description;
-    private long departmentId;
+    private Department departmentId;
 
     public Major(){}
 
-    public Major(String name, String description, long departmentId) {
+    public Major(String name, String description, Department departmentId) {
         this.name = name;
         this.description = description;
         this.departmentId = departmentId;
     }
 
-    public Major(long id, String name, String description, long departmentId) {
+    public Major(long id, String name, String description, Department departmentId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -45,11 +45,11 @@ public class Major {
         this.description = description;
     }
 
-    public long getDepartmentId() {
+    public Department getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartment(long department) {
+    public void setDepartment(Department department) {
         this.departmentId = departmentId;
     }
 

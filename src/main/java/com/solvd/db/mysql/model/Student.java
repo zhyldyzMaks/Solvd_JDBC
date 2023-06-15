@@ -6,10 +6,9 @@ public class Student {
     private long id;
     private String name;
     private Date admissionDate;
-    private long userId;
-    private long majorId;
-    private long contactInfo;
-
+    private User userId;
+    private Major majorId;
+    private ContactInformation contactInfoId;
 
     public Student(){}
     public Student(long id, String name, Date admissionDate) {
@@ -17,18 +16,19 @@ public class Student {
         this.name = name;
         this.admissionDate = admissionDate;
     }
-    public Student(long id, String name, Date admissionDate, long userId, long majorId, long contactInfo){
+    public Student(long id, String name, Date admissionDate, User userId, Major majorId, ContactInformation contactInfoId){
         this.id = id;
         this.name = name;
         this.admissionDate = admissionDate;
         this.userId = userId;
         this.majorId = majorId;
-        this.contactInfo = contactInfo;
+        this.contactInfoId = contactInfoId;
     }
 
     public long getId() {
         return id;
     }
+
     public void setId(long id) {
 
         this.id = id;
@@ -52,44 +52,29 @@ public class Student {
         this.admissionDate = admissionDate;
     }
 
-    public long getUserId() {
+    public User getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(User userId) {
         this.userId = userId;
     }
 
-    public long getMajorId() {
+    public Major getMajorId() {
         return majorId;
     }
 
-    public void setMajorId(long majorId) {
+    public void setMajorId(Major majorId) {
         this.majorId = majorId;
     }
-    //    public User getUser() {
 
-    public long getContactInfo() {
-        return contactInfo;
+    public ContactInformation getContactInfo() {
+        return contactInfoId;
     }
 
-    public void setContactInfo(long contactInfo) {
-        this.contactInfo = contactInfo;
+    public void setContactInfo(ContactInformation contactInfoId) {
+        this.contactInfoId = contactInfoId;
     }
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
-//
-//    public Major getMajor() {
-//        return major;
-//    }
-//
-//    public void setMajor(Major major) {
-//        this.major = major;
-//    }
 
     @Override
     public String toString() {
@@ -99,7 +84,7 @@ public class Student {
                 ", admissionDate=" + admissionDate +
                 ", userId=" + userId +
                 ", majorId=" + majorId +
-                ", contactInfo=" + contactInfo +
+                ", contactInfoId=" + contactInfoId +
                 '}';
     }
 }

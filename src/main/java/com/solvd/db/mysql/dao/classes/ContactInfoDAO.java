@@ -4,21 +4,22 @@ import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.ContactInformation;
 import com.solvd.db.mysql.model.Student;
 import com.solvd.db.utils.ConnectionManager;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class ContactInfoDAO implements IDAO<ContactInformation> {
-    PreparedStatement preparedStatement = null;
-    ResultSet resultSet = null;
+    private static final Logger logger = LogManager.getLogger(TranscriptDAO.class);
+    public static final String insertQuery = "insert into contact_information (first_name, last_name, email, address, phone_number) " +
+            "values(?,?,?,?,?)";
+    public static final String updateQuery = "update contact_information set  first_name = ?, last_name = ?, email = ?," +
+            " address = ?, phone_number = ? where id = ?";
 
     public boolean create(ContactInformation contactInfo) {
         Student student = new Student();
         try ( Connection connection = ConnectionManager.getConnection()) {
-            String insertQuery = "insert into contact_information (first_name, last_name, email, address, phone_number) " +
-                    "values(?,?,?,?,?)";
-            preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, contactInfo.getName());
             preparedStatement.setString(2, contactInfo.getLastName());
             preparedStatement.setString(3, contactInfo.getEmail());
@@ -26,27 +27,27 @@ public class ContactInfoDAO implements IDAO<ContactInformation> {
             preparedStatement.setString(5, contactInfo.getPhoneNumber());
 
             if (preparedStatement.executeUpdate()>0){
-                resultSet = preparedStatement.getGeneratedKeys();
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
                 if (resultSet.next()){
                     long generatedId = resultSet.getLong(1);
-                    System.out.println("Contact information of student with ID " +  student.getId() + " created.");
+                    logger.info("Contact information of student with ID " +  generatedId + " created.");
                 }
             } else {
-                System.out.println("Failed to create contact information for student with ID: " + student.getId());
+                logger.warn("Failed to create contact information for student with ID: " + student.getId());
                 return false;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while creating contact information for student.", e);
         } return false;
     }
 
     @Override
-    public ContactInformation getById(long id) throws SQLException {
+    public ContactInformation getById(long id) {
         ContactInformation contactInfo = new ContactInformation();
         try ( Connection connection = ConnectionManager.getConnection()) {
-            preparedStatement = connection.prepareStatement("select * from contact_information where id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from contact_information where id = ?");
             preparedStatement.setLong(1, id);
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 contactInfo.setId(resultSet.getLong("id"));
                 contactInfo.setName(resultSet.getString("first_name"));
@@ -55,39 +56,16 @@ public class ContactInfoDAO implements IDAO<ContactInformation> {
                 contactInfo.setAddress(resultSet.getString("address"));
                 contactInfo.setPhoneNumber(resultSet.getString("phone_number"));
             }
+        } catch (SQLException e) {
+            logger.error("Error while getting contact information for student.", e);
         }
         return contactInfo;
-    }
-    @Override
-    public List<ContactInformation> getAll() {
-        List<ContactInformation> allContactInfo = new ArrayList<>();
-        try(Connection connection = ConnectionManager.getConnection()){
-            preparedStatement = connection.prepareStatement("select * from contact_information ");
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("first_name");
-                String lastName = resultSet.getString("last_name");
-                String email = resultSet.getString("email");
-                String address = resultSet.getString("address");
-                String phoneNumber = resultSet.getString("phone_number");
-
-                ContactInformation contactInfo = new ContactInformation(id, name, lastName, email, address, phoneNumber);
-                allContactInfo.add(contactInfo);
-            }
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-        return allContactInfo;
     }
 
     @Override
     public boolean update(ContactInformation contactInfo) {
         try (Connection connection = ConnectionManager.getConnection()) {
-            String updateQuery = "update contact_information set  first_name = ?, last_name = ?, email = ?," +
-                    " address = ?, phone_number = ? where id = ?";
-            preparedStatement = connection.prepareStatement(updateQuery);
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setString(1, contactInfo.getName());
             preparedStatement.setString(2, contactInfo.getLastName());
             preparedStatement.setString(3, contactInfo.getEmail());
@@ -98,17 +76,20 @@ public class ContactInfoDAO implements IDAO<ContactInformation> {
             int updatedRows = preparedStatement.executeUpdate();
             return updatedRows > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while updating contact information for student.", e);
         }return false;
     }
 
     @Override
-    public boolean delete(long id) throws SQLException {
+    public boolean delete(long id) {
         try(Connection connection = ConnectionManager.getConnection()){
-            preparedStatement = connection.prepareStatement("delete from contact_information where id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("delete from contact_information where id = ?");
             preparedStatement.setLong(1,id);
             int deletedRows = preparedStatement.executeUpdate();
             return  deletedRows > 0;
+        } catch (SQLException e) {
+            logger.error("Error while deleting contact information for student.", e);
         }
+        return false;
     }
 }

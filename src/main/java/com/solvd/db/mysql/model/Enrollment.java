@@ -5,17 +5,17 @@ import java.sql.Date;
 public class Enrollment {
     private long id;
     private Date date;
-    private long studentId;
-    private long courseId;
+    private Student studentId;
+    private Course courseId;
 
     public Enrollment(){}
 
-    public Enrollment(Date date, long studentId, long courseId){
+    public Enrollment(Date date, Student studentId, Course courseId){
         this.date = date;
         this.studentId = studentId;
         this.courseId = courseId;
     }
-    public Enrollment(long id, Date date, long studentId, long courseId){
+    public Enrollment(long id, Date date, Student studentId, Course courseId){
         this.id = id;
         this.date = date;
         this.studentId = studentId;
@@ -38,19 +38,19 @@ public class Enrollment {
         this.date = enrollmentDate;
     }
 
-    public long getStudentId() {
+    public Student getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(long studentId) {
+    public void setStudentId(Student studentId) {
         this.studentId = studentId;
     }
 
-    public long getCourseId() {
+    public Course getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(long courseId) {
+    public void setCourseId(Course courseId) {
         this.courseId = courseId;
     }
 

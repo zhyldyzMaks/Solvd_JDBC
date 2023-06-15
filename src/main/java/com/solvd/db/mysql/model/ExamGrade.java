@@ -3,19 +3,21 @@ package com.solvd.db.mysql.model;
 public class ExamGrade {
     private long id;
     private String grade;
-    private long exam;
+    private Exam examId;
+    private Student studentId;
 
     public ExamGrade(){}
 
-    public ExamGrade(String grade, long exam) {
+    public ExamGrade(String grade, Exam examId) {
         this.grade = grade;
-        this.exam = exam;
+        this.examId = examId;
     }
 
-    public ExamGrade(long id, String grade, long exam) {
+    public ExamGrade(long id, String grade, Exam examId, Student studentId) {
         this.id = id;
         this.grade = grade;
-        this.exam = exam;
+        this.examId = examId;
+        this.studentId = studentId;
     }
 
     public long getId() {
@@ -34,12 +36,20 @@ public class ExamGrade {
         this.grade = grade;
     }
 
-    public long getExam() {
-        return exam;
+    public Exam getExamId() {
+        return examId;
     }
 
-    public void setExam(long exam) {
-        this.exam = exam;
+    public void setExamId(Exam examId) {
+        this.examId = examId;
+    }
+
+    public Student getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Student studentId) {
+        this.studentId = studentId;
     }
 
     @Override
@@ -47,7 +57,8 @@ public class ExamGrade {
         return "ExamGrade{" +
                 "id=" + id +
                 ", grade='" + grade + '\'' +
-                ", exam=" + exam +
+                ", examId=" + examId +
+                ", studentId=" + studentId +
                 '}';
     }
 }

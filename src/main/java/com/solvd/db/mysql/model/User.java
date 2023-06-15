@@ -1,11 +1,19 @@
 package com.solvd.db.mysql.model;
 
-public class User {
+import jakarta.xml.bind.annotation.*;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "user")
+public class User {
+    @XmlAttribute
     private long id;
+    @XmlElement
     private String username;
+    @XmlElement
     private String password;
+    @XmlElement(name = "student_id")
     private Student student;
+
     public User(){}
 
     public User(String username, String password){

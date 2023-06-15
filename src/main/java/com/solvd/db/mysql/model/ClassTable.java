@@ -4,16 +4,16 @@ public class ClassTable {
     private long id;
     private String roomNumber;
     private String schedule;
-    private long courseId;
+    private Course courseId;
 
     public ClassTable(){}
 
-    public ClassTable(String roomNumber, String schedule, long courseId) {
+    public ClassTable(String roomNumber, String schedule, Course courseId) {
         this.roomNumber = roomNumber;
         this.schedule = schedule;
         this.courseId = courseId;
     }
-    public ClassTable(long id, String roomNumber, String schedule, long courseId) {
+    public ClassTable(long id, String roomNumber, String schedule, Course courseId) {
         this.id = id;
         this.roomNumber = roomNumber;
         this.schedule = schedule;
@@ -44,11 +44,11 @@ public class ClassTable {
         this.schedule = schedule;
     }
 
-    public long getCourseId() {
+    public Course getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(long courseId) {
+    public void setCourseId(Course courseId) {
         this.courseId = courseId;
     }
 

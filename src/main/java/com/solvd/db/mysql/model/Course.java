@@ -4,11 +4,11 @@ public class Course {
     private long id;
     private String name;
     private int credits;
-    private long departmentId;
+    private Department departmentId;
 
     public Course(){}
 
-    public Course(long id, String name, int credits, long departmentId) {
+    public Course(long id, String name, int credits, Department departmentId) {
         this.id = id;
         this.name = name;
         this.credits = credits;
@@ -39,11 +39,11 @@ public class Course {
         this.credits = credits;
     }
 
-    public long getDepartmentId() {
+    public Department getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(long departmentId) {
+    public void setDepartmentId(Department departmentId) {
         this.departmentId = departmentId;
     }
 
