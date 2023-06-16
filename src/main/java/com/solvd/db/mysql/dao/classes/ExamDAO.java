@@ -4,7 +4,7 @@ import com.solvd.db.mysql.dao.AbstractDAO;
 import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.Course;
 import com.solvd.db.mysql.model.Exam;
-import com.solvd.db.utils.ConnectionManager;
+import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.*;
@@ -17,7 +17,8 @@ public class ExamDAO extends AbstractDAO<Exam> implements IDAO<Exam> {
     public static final  String updateQuery = "update exams set name = ?, date = ?, course_id = ? where id = ?";
     @Override
     public boolean create(Exam exam){
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, exam.getName());
             preparedStatement.setDate(2, exam.getDate());
@@ -40,8 +41,9 @@ public class ExamDAO extends AbstractDAO<Exam> implements IDAO<Exam> {
 
     @Override
     public Exam getById(long id){
+        ConnectionPool connectionPool = new ConnectionPool();
         Exam exam = new Exam();
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select * from exams where id = ?");
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -62,8 +64,9 @@ public class ExamDAO extends AbstractDAO<Exam> implements IDAO<Exam> {
 
     @Override
     public List<Exam> getAll(){
+        ConnectionPool connectionPool = new ConnectionPool();
         List<Exam> allExams = new ArrayList<>();
-        try(Connection connection = ConnectionManager.getConnection()){
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("select * from exams");
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -85,7 +88,8 @@ public class ExamDAO extends AbstractDAO<Exam> implements IDAO<Exam> {
 
     @Override
     public boolean update(Exam exam) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setString(1, exam.getName());
             preparedStatement.setDate(2, exam.getDate());
@@ -101,7 +105,8 @@ public class ExamDAO extends AbstractDAO<Exam> implements IDAO<Exam> {
 
     @Override
     public boolean delete(long id) {
-        try(Connection connection = ConnectionManager.getConnection()){
+        ConnectionPool connectionPool = new ConnectionPool();
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("delete from exams where id = ?");
             preparedStatement.setLong(1,id);
             int deletedRows = preparedStatement.executeUpdate();

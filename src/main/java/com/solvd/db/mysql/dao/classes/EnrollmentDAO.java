@@ -5,7 +5,7 @@ import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.Course;
 import com.solvd.db.mysql.model.Enrollment;
 import com.solvd.db.mysql.model.Student;
-import com.solvd.db.utils.ConnectionManager;
+import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.*;
@@ -20,7 +20,8 @@ public class EnrollmentDAO extends AbstractDAO<Enrollment> implements IDAO<Enrol
     public static final String updateQuery = "update enrollments set date = ?, student_id = ?, course_id = ? where id = ?";
 
     public boolean create(Enrollment enrollment) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setDate(1, enrollment.getEnrollmentDate());
             preparedStatement.setLong(2, enrollment.getStudentId().getId());
@@ -44,8 +45,9 @@ public class EnrollmentDAO extends AbstractDAO<Enrollment> implements IDAO<Enrol
 
     @Override
     public Enrollment getById(long id) {
+        ConnectionPool connectionPool = new ConnectionPool();
         Enrollment enrollment = new Enrollment();
-        try (Connection connection = ConnectionManager.getConnection()) {
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select * from enrollments where id = ?");
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -69,8 +71,9 @@ public class EnrollmentDAO extends AbstractDAO<Enrollment> implements IDAO<Enrol
 
     @Override
     public List<Enrollment> getAll() {
+        ConnectionPool connectionPool = new ConnectionPool();
         List<Enrollment> allEnrollments = new ArrayList<>();
-        try (Connection connection = ConnectionManager.getConnection()) {
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select * from enrollments");
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -94,7 +97,8 @@ public class EnrollmentDAO extends AbstractDAO<Enrollment> implements IDAO<Enrol
 
     @Override
     public boolean update(Enrollment enrollment) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setDate(1, enrollment.getEnrollmentDate());
             preparedStatement.setLong(2, enrollment.getStudentId().getId());
@@ -113,7 +117,8 @@ public class EnrollmentDAO extends AbstractDAO<Enrollment> implements IDAO<Enrol
 
     @Override
     public boolean delete(long id) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("delete from enrollments where id = ?");
             preparedStatement.setLong(1, id);
             int deletedRows = preparedStatement.executeUpdate();
@@ -125,8 +130,9 @@ public class EnrollmentDAO extends AbstractDAO<Enrollment> implements IDAO<Enrol
     }
 
     public List<Enrollment> getEnrollmentsForStudent(Student student) throws SQLException {
+        ConnectionPool connectionPool = new ConnectionPool();
         List<Enrollment> enrollments = new ArrayList<>();
-        try (Connection connection = ConnectionManager.getConnection()) {
+        try (Connection connection = connectionPool.getConnection()) {
             String sql = "select * from enrollment where student_id = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setLong(1, student.getId());

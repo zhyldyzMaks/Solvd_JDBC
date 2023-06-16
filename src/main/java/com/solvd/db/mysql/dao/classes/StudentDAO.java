@@ -6,7 +6,7 @@ import com.solvd.db.mysql.model.ContactInformation;
 import com.solvd.db.mysql.model.Major;
 import com.solvd.db.mysql.model.Student;
 import com.solvd.db.mysql.model.User;
-import com.solvd.db.utils.ConnectionManager;
+import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.*;
@@ -22,8 +22,8 @@ public class StudentDAO extends AbstractDAO<Student> implements IDAO<Student> {
 
     @Override
     public boolean create(Student student) {
-
-        try(Connection connection = ConnectionManager.getConnection()){
+        ConnectionPool connectionPool = new ConnectionPool();
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement(createStudentQuery);
             preparedStatement.setLong(1,student.getId());
             preparedStatement.setString(2, student.getName());
@@ -41,7 +41,8 @@ public class StudentDAO extends AbstractDAO<Student> implements IDAO<Student> {
 
     @Override
     public Student getById(long id) {
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try ( Connection connection = connectionPool.getConnection()) {
             String getQuery = "select * from students where id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(getQuery);
             preparedStatement.setLong(1, id);
@@ -72,8 +73,9 @@ public class StudentDAO extends AbstractDAO<Student> implements IDAO<Student> {
     }
 
     public Student getStudentByName(String name){
+        ConnectionPool connectionPool = new ConnectionPool();
         String getByNameQuery = "select * from students WHERE name = ?";
-        try (Connection connection = ConnectionManager.getConnection()){
+        try (Connection connection = connectionPool.getConnection()){
             Student student = new Student();
             PreparedStatement preparedStatement = connection.prepareStatement(getByNameQuery);
             preparedStatement.setString(1, name);
@@ -102,8 +104,9 @@ public class StudentDAO extends AbstractDAO<Student> implements IDAO<Student> {
 
     @Override
     public List<Student> getAll() {
+        ConnectionPool connectionPool = new ConnectionPool();
         List<Student> allStudents = new ArrayList<>();
-        try (Connection connection = ConnectionManager.getConnection()) {
+        try (Connection connection = connectionPool.getConnection()) {
             String getAllQuery = "SELECT * FROM students";
             PreparedStatement preparedStatement = connection.prepareStatement(getAllQuery);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -136,7 +139,8 @@ public class StudentDAO extends AbstractDAO<Student> implements IDAO<Student> {
 
     @Override
     public boolean update(Student student) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updateStudentQuery);
             preparedStatement.setString(1, student.getName());
             preparedStatement.setDate(2, student.getAdmissionDate());
@@ -153,7 +157,8 @@ public class StudentDAO extends AbstractDAO<Student> implements IDAO<Student> {
 
     @Override
     public boolean delete(long id)  {
-        try(Connection connection = ConnectionManager.getConnection()){
+        ConnectionPool connectionPool = new ConnectionPool();
+        try(Connection connection = connectionPool.getConnection()){
             String deleteQuery = "delete from students where id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
             preparedStatement.setLong(1,id);
@@ -165,7 +170,8 @@ public class StudentDAO extends AbstractDAO<Student> implements IDAO<Student> {
     }
 
     public Student getStudentByUserID(long userId) {
-        try(Connection connection = ConnectionManager.getConnection()){
+        ConnectionPool connectionPool = new ConnectionPool();
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("select * from students where user_id = ?");
             preparedStatement.setLong(1,userId);
             ResultSet resultSet = preparedStatement.executeQuery();

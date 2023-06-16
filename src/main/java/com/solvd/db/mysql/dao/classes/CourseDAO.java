@@ -4,7 +4,7 @@ import com.solvd.db.mysql.dao.AbstractDAO;
 import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.Course;
 import com.solvd.db.mysql.model.Department;
-import com.solvd.db.utils.ConnectionManager;
+import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
@@ -21,7 +21,8 @@ public class CourseDAO extends AbstractDAO<Course> implements IDAO<Course> {
 
     @Override
     public boolean create(Course course) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(insertQuery);
             statement.setLong(1, course.getId());
             statement.setString(2, course.getName());
@@ -40,8 +41,9 @@ public class CourseDAO extends AbstractDAO<Course> implements IDAO<Course> {
     }
     @Override
     public Course getById(long id) {
+        ConnectionPool connectionPool = new ConnectionPool();
         Course course = new Course();
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select * from courses where id = ?");
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -62,8 +64,9 @@ public class CourseDAO extends AbstractDAO<Course> implements IDAO<Course> {
 
     @Override
     public List<Course> getAll(){
+        ConnectionPool connectionPool = new ConnectionPool();
         List<Course> allCourses = new ArrayList<>();
-        try(Connection connection = ConnectionManager.getConnection()){
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("select * from courses");
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -86,7 +89,8 @@ public class CourseDAO extends AbstractDAO<Course> implements IDAO<Course> {
 
     @Override
     public boolean update(Course course) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setString(1, course.getName());
             preparedStatement.setLong(2, course.getDepartmentId().getId());
@@ -102,7 +106,8 @@ public class CourseDAO extends AbstractDAO<Course> implements IDAO<Course> {
 
     @Override
     public boolean delete(long id) {
-        try(Connection connection = ConnectionManager.getConnection()){
+        ConnectionPool connectionPool = new ConnectionPool();
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("delete from courses where id = ?");
             preparedStatement.setLong(1,id);
             int deletedRows = preparedStatement.executeUpdate();

@@ -5,7 +5,7 @@ import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.Exam;
 import com.solvd.db.mysql.model.ExamGrade;
 import com.solvd.db.mysql.model.Student;
-import com.solvd.db.utils.ConnectionManager;
+import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.*;
@@ -19,7 +19,8 @@ public class ExamGradeDAO extends AbstractDAO<ExamGrade> implements IDAO<ExamGra
 
     @Override
     public boolean create(ExamGrade examGrade){
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, examGrade.getGrade());
             preparedStatement.setLong(2, examGrade.getExamId().getId());
@@ -42,8 +43,9 @@ public class ExamGradeDAO extends AbstractDAO<ExamGrade> implements IDAO<ExamGra
 
     @Override
     public ExamGrade getById(long id){
+        ConnectionPool connectionPool = new ConnectionPool();
         ExamGrade examGrade = new ExamGrade();
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select * from exam_grades where id = ?");
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -67,8 +69,9 @@ public class ExamGradeDAO extends AbstractDAO<ExamGrade> implements IDAO<ExamGra
 
     @Override
     public List<ExamGrade> getAll(){
+        ConnectionPool connectionPool = new ConnectionPool();
         List<ExamGrade> allExamGrades = new ArrayList<>();
-        try(Connection connection = ConnectionManager.getConnection()){
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("select * from exam_grades");
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -92,7 +95,8 @@ public class ExamGradeDAO extends AbstractDAO<ExamGrade> implements IDAO<ExamGra
 
     @Override
     public boolean update(ExamGrade examGrade) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setString(1, examGrade.getGrade());
             preparedStatement.setLong(2, examGrade.getExamId().getId());
@@ -108,7 +112,8 @@ public class ExamGradeDAO extends AbstractDAO<ExamGrade> implements IDAO<ExamGra
 
     @Override
     public boolean delete(long id){
-        try(Connection connection = ConnectionManager.getConnection()){
+        ConnectionPool connectionPool = new ConnectionPool();
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("delete from exam_grades where id = ?");
             preparedStatement.setLong(1,id);
             int deletedRows = preparedStatement.executeUpdate();

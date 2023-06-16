@@ -3,7 +3,7 @@ package com.solvd.db.mysql.dao.classes;
 import com.solvd.db.mysql.dao.AbstractDAO;
 import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.User;
-import com.solvd.db.utils.ConnectionManager;
+import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,8 +18,10 @@ public class UserDAO extends AbstractDAO<User> implements IDAO<User> {
 
     public static final String updateQuery = "update users set username = ?, password = ? where id = ?";
 
+
     public boolean create(User user) {
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
@@ -41,8 +43,9 @@ public class UserDAO extends AbstractDAO<User> implements IDAO<User> {
 
     @Override
     public User getById(long id){
+        ConnectionPool connectionPool = new ConnectionPool();
         User user = new User();
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select * from users where id = ?");
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -58,8 +61,9 @@ public class UserDAO extends AbstractDAO<User> implements IDAO<User> {
     }
     @Override
     public List<User> getAll() {
+        ConnectionPool connectionPool = new ConnectionPool();
         List<User> allUsers = new ArrayList<>();
-        try(Connection connection = ConnectionManager.getConnection()){
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("select * from users");
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -79,7 +83,8 @@ public class UserDAO extends AbstractDAO<User> implements IDAO<User> {
 
     @Override
     public boolean update(User user) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
@@ -95,7 +100,8 @@ public class UserDAO extends AbstractDAO<User> implements IDAO<User> {
     }
     @Override
     public boolean delete(long id){
-        try(Connection connection = ConnectionManager.getConnection()){
+        ConnectionPool connectionPool = new ConnectionPool();
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("delete from users where id = ?");
             preparedStatement.setLong(1,id);
             int deletedRows = preparedStatement.executeUpdate();

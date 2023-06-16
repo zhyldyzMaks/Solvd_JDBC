@@ -5,7 +5,7 @@ import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.Course;
 import com.solvd.db.mysql.model.Student;
 import com.solvd.db.mysql.model.Transcript;
-import com.solvd.db.utils.ConnectionManager;
+import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.*;
@@ -22,7 +22,8 @@ public class TranscriptDAO extends AbstractDAO<Transcript> implements IDAO<Trans
 
     @Override
     public boolean create(Transcript tr) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, tr.getGrade());
             preparedStatement.setDate(2, tr.getCompletionDate());
@@ -48,8 +49,9 @@ public class TranscriptDAO extends AbstractDAO<Transcript> implements IDAO<Trans
 
     @Override
     public Transcript getById(long id) {
+        ConnectionPool connectionPool = new ConnectionPool();
         Transcript tr = new Transcript();
-        try (Connection connection = ConnectionManager.getConnection()) {
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select * from transcripts where id = ?");
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -75,8 +77,9 @@ public class TranscriptDAO extends AbstractDAO<Transcript> implements IDAO<Trans
 
     @Override
     public List<Transcript> getAll() {
+        ConnectionPool connectionPool = new ConnectionPool();
         List<Transcript> transcripts = new ArrayList<>();
-        try (Connection connection = ConnectionManager.getConnection()) {
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select * from transcripts");
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -103,7 +106,8 @@ public class TranscriptDAO extends AbstractDAO<Transcript> implements IDAO<Trans
 
     @Override
     public boolean update(Transcript tr) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setString(1, tr.getGrade());
             preparedStatement.setDate(2, tr.getCompletionDate());
@@ -121,7 +125,8 @@ public class TranscriptDAO extends AbstractDAO<Transcript> implements IDAO<Trans
 
     @Override
     public boolean delete(long id) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("delete from transcripts where id = ?");
             preparedStatement.setLong(1, id);
             int deletedRows = preparedStatement.executeUpdate();
@@ -133,7 +138,8 @@ public class TranscriptDAO extends AbstractDAO<Transcript> implements IDAO<Trans
     }
 
     public Transcript getTranscriptByStudentId(int studentId) throws SQLException {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             String query = "select t.id, t.grade, t.completion_date, t.student_id, t.course_id " +
                     "from transcripts t " +
                     "where t.student_id = ?";

@@ -3,7 +3,7 @@ package com.solvd.db.mysql.dao.classes;
 import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.ContactInformation;
 import com.solvd.db.mysql.model.Student;
-import com.solvd.db.utils.ConnectionManager;
+import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.*;
@@ -17,8 +17,9 @@ public class ContactInfoDAO implements IDAO<ContactInformation> {
             " address = ?, phone_number = ? where id = ?";
 
     public boolean create(ContactInformation contactInfo) {
+        ConnectionPool connectionPool = new ConnectionPool();
         Student student = new Student();
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, contactInfo.getName());
             preparedStatement.setString(2, contactInfo.getLastName());
@@ -43,8 +44,9 @@ public class ContactInfoDAO implements IDAO<ContactInformation> {
 
     @Override
     public ContactInformation getById(long id) {
+        ConnectionPool connectionPool = new ConnectionPool();
         ContactInformation contactInfo = new ContactInformation();
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select * from contact_information where id = ?");
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -64,7 +66,8 @@ public class ContactInfoDAO implements IDAO<ContactInformation> {
 
     @Override
     public boolean update(ContactInformation contactInfo) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setString(1, contactInfo.getName());
             preparedStatement.setString(2, contactInfo.getLastName());
@@ -82,7 +85,8 @@ public class ContactInfoDAO implements IDAO<ContactInformation> {
 
     @Override
     public boolean delete(long id) {
-        try(Connection connection = ConnectionManager.getConnection()){
+        ConnectionPool connectionPool = new ConnectionPool();
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("delete from contact_information where id = ?");
             preparedStatement.setLong(1,id);
             int deletedRows = preparedStatement.executeUpdate();

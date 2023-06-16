@@ -4,7 +4,7 @@ import com.solvd.db.mysql.dao.AbstractDAO;
 import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.ClassTable;
 import com.solvd.db.mysql.model.Course;
-import com.solvd.db.utils.ConnectionManager;
+import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.*;
@@ -18,7 +18,8 @@ public class ClassDAO extends AbstractDAO<ClassTable> implements IDAO<ClassTable
 
     @Override
     public boolean create(ClassTable classTable) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, classTable.getRoomNumber());
             preparedStatement.setString(2, classTable.getSchedule());
@@ -41,8 +42,9 @@ public class ClassDAO extends AbstractDAO<ClassTable> implements IDAO<ClassTable
     }
     @Override
     public ClassTable getById(long id) {
+        ConnectionPool connectionPool = new ConnectionPool();
         ClassTable classTable = new ClassTable();
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select * from classes where id = ?");
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -62,8 +64,9 @@ public class ClassDAO extends AbstractDAO<ClassTable> implements IDAO<ClassTable
     }
     @Override
     public List<ClassTable> getAll() {
+        ConnectionPool connectionPool = new ConnectionPool();
         List<ClassTable> allClasses = new ArrayList<>();
-        try(Connection connection = ConnectionManager.getConnection()){
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("select * from classes");
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -85,7 +88,8 @@ public class ClassDAO extends AbstractDAO<ClassTable> implements IDAO<ClassTable
 
     @Override
     public boolean update(ClassTable classTable) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setString(1, classTable.getRoomNumber());
             preparedStatement.setString(2, classTable.getSchedule());
@@ -101,7 +105,8 @@ public class ClassDAO extends AbstractDAO<ClassTable> implements IDAO<ClassTable
 
     @Override
     public boolean delete(long id) {
-        try(Connection connection = ConnectionManager.getConnection()){
+        ConnectionPool connectionPool = new ConnectionPool();
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("delete from classes where id = ?");
             preparedStatement.setLong(1,id);
             int deletedRows = preparedStatement.executeUpdate();

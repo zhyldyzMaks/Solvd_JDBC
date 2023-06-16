@@ -3,7 +3,7 @@ package com.solvd.db.mysql.dao.classes;
 import com.solvd.db.mysql.dao.AbstractDAO;
 import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.Department;
-import com.solvd.db.utils.ConnectionManager;
+import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.*;
@@ -16,7 +16,8 @@ public class DepartmentDAO extends AbstractDAO<Department> implements IDAO<Depar
     public static final String updateQuery = "update departments set name = ? where id = ?";
     @Override
     public boolean create(Department dept){
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, dept.getName());
 
@@ -37,8 +38,9 @@ public class DepartmentDAO extends AbstractDAO<Department> implements IDAO<Depar
 
     @Override
     public Department getById(long id) {
+        ConnectionPool connectionPool = new ConnectionPool();
         Department dept = new Department();
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select * from departments where id = ?");
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -54,8 +56,9 @@ public class DepartmentDAO extends AbstractDAO<Department> implements IDAO<Depar
 
     @Override
     public List<Department> getAll() {
+        ConnectionPool connectionPool = new ConnectionPool();
         List<Department> allDepartments = new ArrayList<>();
-        try(Connection connection = ConnectionManager.getConnection()){
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("select * from departments");
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -74,7 +77,8 @@ public class DepartmentDAO extends AbstractDAO<Department> implements IDAO<Depar
 
     @Override
     public boolean update(Department department) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             preparedStatement.setString(1, department.getName());
             preparedStatement.setLong(2, department.getId());
@@ -88,7 +92,8 @@ public class DepartmentDAO extends AbstractDAO<Department> implements IDAO<Depar
 
     @Override
     public boolean delete(long id) {
-        try(Connection connection = ConnectionManager.getConnection()){
+        ConnectionPool connectionPool = new ConnectionPool();
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("delete from departments where id = ?");
             preparedStatement.setLong(1,id);
             int deletedRows = preparedStatement.executeUpdate();

@@ -4,7 +4,7 @@ import com.solvd.db.mysql.dao.AbstractDAO;
 import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.Department;
 import com.solvd.db.mysql.model.Major;
-import com.solvd.db.utils.ConnectionManager;
+import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.*;
@@ -18,7 +18,8 @@ public class MajorDAO extends AbstractDAO<Major> implements IDAO<Major> {
 
     @Override
     public boolean create(Major major) {
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, major.getName());
             statement.setString(2, major.getDescription());
@@ -40,8 +41,9 @@ public class MajorDAO extends AbstractDAO<Major> implements IDAO<Major> {
     }
     @Override
     public Major getById(long id){
+        ConnectionPool connectionPool = new ConnectionPool();
         Major major = new Major();
-        try ( Connection connection = ConnectionManager.getConnection()) {
+        try ( Connection connection = connectionPool.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("select * from majors where id = ?");
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -61,7 +63,8 @@ public class MajorDAO extends AbstractDAO<Major> implements IDAO<Major> {
     }
     @Override
     public boolean delete(long id){
-        try(Connection connection = ConnectionManager.getConnection()){
+        ConnectionPool connectionPool = new ConnectionPool();
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement statement = connection.prepareStatement("delete from majors where id = ?");
             statement.setLong(1,id);
             int deletedRows = statement.executeUpdate();
@@ -73,9 +76,9 @@ public class MajorDAO extends AbstractDAO<Major> implements IDAO<Major> {
     }
     @Override
     public List<Major> getAll(){
-        System.out.println("List of all majors in the University");
+        ConnectionPool connectionPool = new ConnectionPool();
         List<Major> allMajors = new ArrayList<>();
-        try(Connection connection = ConnectionManager.getConnection()){
+        try(Connection connection = connectionPool.getConnection()){
             PreparedStatement statement = connection.prepareStatement("select * from majors");
             ResultSet resultSet = statement.executeQuery();
 
@@ -98,7 +101,8 @@ public class MajorDAO extends AbstractDAO<Major> implements IDAO<Major> {
 
     @Override
     public boolean update(Major major) {
-        try (Connection connection = ConnectionManager.getConnection()) {
+        ConnectionPool connectionPool = new ConnectionPool();
+        try (Connection connection = connectionPool.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(updateQuery);
             statement.setString(1, major.getName());
             statement.setString(2, major.getDescription());
