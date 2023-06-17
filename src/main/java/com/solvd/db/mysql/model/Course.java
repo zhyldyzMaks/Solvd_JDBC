@@ -1,10 +1,21 @@
 package com.solvd.db.mysql.model;
 
+import jakarta.xml.bind.annotation.*;
+
+import java.util.List;
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "course")
 public class Course {
+    @XmlAttribute
     private long id;
+    @XmlElement
     private String name;
+    @XmlElement
     private int credits;
     private Department departmentId;
+    @XmlElementWrapper(name = "examList")
+    @XmlElement(name = "exam")
+    private List<Exam> examList;
 
     public Course(){}
 
@@ -45,6 +56,14 @@ public class Course {
 
     public void setDepartmentId(Department departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public List<Exam> getExamList() {
+        return examList;
+    }
+
+    public void setExamList(List<Exam> examList) {
+        this.examList = examList;
     }
 
     @Override
