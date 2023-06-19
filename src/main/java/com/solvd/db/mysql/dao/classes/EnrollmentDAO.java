@@ -49,17 +49,8 @@ public class EnrollmentDAO extends AbstractDAO<Enrollment> implements GetAllInte
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                enrollment.setId(resultSet.getLong("id"));
-                enrollment.setEnrollmentDate(resultSet.getDate("date"));
-                long studentId = resultSet.getLong("student_id");
-                StudentDAO studentDAO = new StudentDAO();
-                Student student = studentDAO.getById(studentId);
-                enrollment.setStudentId(student);
-                long courseId = resultSet.getLong("course_id");
-                CourseDAO courseDAO = new CourseDAO();
-                Course course = courseDAO.getById(courseId);
-                enrollment.setCourseId(course);
+            if (resultSet.next()) {
+                enrollment = mapResultSetToEnrollment(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Error while retrieving enrollment.", e);
@@ -73,15 +64,7 @@ public class EnrollmentDAO extends AbstractDAO<Enrollment> implements GetAllInte
         try (PreparedStatement preparedStatement = getConnection().prepareStatement("select * from enrollments")) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                Date date = resultSet.getDate("date");
-                int studentId = resultSet.getInt("student_id");
-                int courseId = resultSet.getInt("course_id");
-                StudentDAO studentDAO = new StudentDAO();
-                Student student = studentDAO.getById(studentId);
-                CourseDAO courseDAO = new CourseDAO();
-                Course course = courseDAO.getById(courseId);
-                Enrollment enrollment = new Enrollment(id, date, student, course);
+                Enrollment enrollment = mapResultSetToEnrollment(resultSet);
                 allEnrollments.add(enrollment);
             }
         } catch (SQLException e) {
@@ -138,5 +121,17 @@ public class EnrollmentDAO extends AbstractDAO<Enrollment> implements GetAllInte
             throw e;
         }
         return enrollments;
+    }
+
+    private Enrollment mapResultSetToEnrollment(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        Date enrollmentDate = resultSet.getDate("enrollment_date");
+        long studentId = resultSet.getLong("student_id");
+        long courseId = resultSet.getLong("course_id");
+        StudentDAO studentDAO = new StudentDAO();
+        Student student = studentDAO.getById(studentId);
+        CourseDAO courseDAO = new CourseDAO();
+        Course course = courseDAO.getById(courseId);
+        return new Enrollment(id, enrollmentDate, student, course);
     }
 }

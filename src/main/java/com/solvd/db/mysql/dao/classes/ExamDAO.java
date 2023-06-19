@@ -46,14 +46,8 @@ public class ExamDAO extends AbstractDAO<Exam> implements GetAllInterface<Exam> 
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                exam.setId(resultSet.getLong("id"));
-                exam.setName(resultSet.getString("name"));
-                exam.setDate(resultSet.getDate("date"));
-                long courseId = resultSet.getInt("course_id");
-                CourseDAO courseDAO = new CourseDAO();
-                Course course = courseDAO.getById(courseId);
-                exam.setCourse(course);
+            if (resultSet.next()){
+                exam = mapResultSetToExam(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Error while retrieving exam.", e);
@@ -67,13 +61,7 @@ public class ExamDAO extends AbstractDAO<Exam> implements GetAllInterface<Exam> 
         try (PreparedStatement preparedStatement = getConnection().prepareStatement("select * from exams")){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                Date date = resultSet.getDate("date");
-                int courseId = resultSet.getInt("course_id");
-                CourseDAO courseDAO = new CourseDAO();
-                Course course = courseDAO.getById(courseId);
-                Exam exam = new Exam(id, name, date, course);
+                Exam exam = mapResultSetToExam(resultSet);
                 allExams.add(exam);
             }
         }catch (SQLException e){
@@ -106,5 +94,15 @@ public class ExamDAO extends AbstractDAO<Exam> implements GetAllInterface<Exam> 
             logger.error("Error while deleting exam.", e);
         }
         return false;
+    }
+
+    private Exam mapResultSetToExam(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String name = resultSet.getString("name");
+        Date date = resultSet.getDate("date");
+        long courseId = resultSet.getLong("course_id");
+        CourseDAO courseDAO = new CourseDAO();
+        Course course = courseDAO.getById(courseId);
+        return new Exam(id, name, date, course);
     }
 }

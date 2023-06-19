@@ -26,8 +26,8 @@ public class StudentDAO extends AbstractDAO<Student> implements GetAllInterface<
 
     @Override
     public boolean create(Student student) {
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(createStudentQuery)){
-            preparedStatement.setLong(1,student.getId());
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(createStudentQuery)) {
+            preparedStatement.setLong(1, student.getId());
             preparedStatement.setString(2, student.getName());
             preparedStatement.setDate(3, student.getAdmissionDate());
             preparedStatement.setLong(4, student.getUserId().getId());
@@ -35,7 +35,7 @@ public class StudentDAO extends AbstractDAO<Student> implements GetAllInterface<
             preparedStatement.setLong(6, student.getContactInfo().getId());
             int affectedRows = preparedStatement.executeUpdate();
             return affectedRows > 0;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error("Error occurred while creating student", e);
         }
         return false;
@@ -46,53 +46,23 @@ public class StudentDAO extends AbstractDAO<Student> implements GetAllInterface<
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                Student student = new Student();
-                student.setId(resultSet.getLong("id"));
-                student.setName(resultSet.getString("name"));
-                student.setAdmissionDate(resultSet.getDate("admission_date"));
-                long userId = resultSet.getLong("user_id");
-                UserDAO userDAO = new UserDAO();
-                User user = userDAO.getById(userId);
-                student.setUserId(user);
-                long majorId = resultSet.getLong("major_id");
-                MajorDAO majorDAO = new MajorDAO();
-                Major major = majorDAO.getById(majorId);
-                student.setMajorId(major);
-                long contactInfoId = resultSet.getLong("contact_info_id");
-                ContactInfoDAO contactInfoDAO = new ContactInfoDAO();
-                ContactInformation contactInformation = contactInfoDAO.getById(contactInfoId);
-                student.setContactInfo(contactInformation);
-                return student;
+            if (resultSet.next()) {
+                return mapResultSetToObject(resultSet);
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error("Error occurred while getting student by ID", e);
         }
         return null;
     }
 
-    public Student getStudentByName(String name){
+    public Student getStudentByName(String name) {
         String getByNameQuery = "select * from students WHERE name = ?";
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(getByNameQuery)){
-            Student student = new Student();
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(getByNameQuery)) {
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
-            student.setId(resultSet.getLong("id"));
-            student.setName(resultSet.getString("name"));
-            student.setAdmissionDate(resultSet.getDate("admission_date"));
-            long userId = resultSet.getLong("user_id");
-            UserDAO userDAO = new UserDAO();
-            User user = userDAO.getById(userId);
-            student.setUserId(user);
-            long majorId = resultSet.getLong("major_id");
-            MajorDAO majorDAO = new MajorDAO();
-            Major major = majorDAO.getById(majorId);
-            student.setMajorId(major);
-            long contactInfoId = resultSet.getLong("contact_info_id");
-            ContactInfoDAO contactInfoDAO = new ContactInfoDAO();
-            ContactInformation contactInformation = contactInfoDAO.getById(contactInfoId);
-            student.setContactInfo(contactInformation);
-            return student;
+            if (resultSet.next()) {
+                return mapResultSetToObject(resultSet);
+            }
         } catch (SQLException e) {
             logger.error("Error occurred while getting student by name", e);
         }
@@ -104,26 +74,11 @@ public class StudentDAO extends AbstractDAO<Student> implements GetAllInterface<
         List<Student> allStudents = new ArrayList<>();
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectAllQuery)) {
             ResultSet resultSet = preparedStatement.executeQuery();
-            UserDAO userDAO = new UserDAO();
-            MajorDAO majorDAO = new MajorDAO();
-            ContactInfoDAO contactInfoDAO = new ContactInfoDAO();
             while (resultSet.next()) {
-                Student student = new Student();
-                student.setId(resultSet.getLong("id"));
-                student.setName(resultSet.getString("name"));
-                student.setAdmissionDate(resultSet.getDate("admission_date"));
-                long userId = resultSet.getLong("user_id");
-                User user = userDAO.getById(userId);
-                student.setUserId(user);
-                long majorId = resultSet.getLong("major_id");
-                Major major = majorDAO.getById(majorId);
-                student.setMajorId(major);
-                long contactInfoId = resultSet.getLong("contact_info_id");
-                ContactInformation contactInformation = contactInfoDAO.getById(contactInfoId);
-                student.setContactInfo(contactInformation);
+                Student student = mapResultSetToObject(resultSet);
                 allStudents.add(student);
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error("Error occurred while getting all students", e);
         }
         return allStudents;
@@ -142,23 +97,25 @@ public class StudentDAO extends AbstractDAO<Student> implements GetAllInterface<
             return updatedRows > 0;
         } catch (SQLException e) {
             logger.error("Error occurred while updating student", e);
-        }return false;
+        }
+        return false;
     }
 
     @Override
-    public boolean delete(long id)  {
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(deleteQuery)){
-            preparedStatement.setLong(1,id);
+    public boolean delete(long id) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(deleteQuery)) {
+            preparedStatement.setLong(1, id);
             int deletedRows = preparedStatement.executeUpdate();
-            return  deletedRows > 0;
+            return deletedRows > 0;
         } catch (SQLException e) {
             logger.error("Error occurred while deleting student", e);
-        } return false;
+        }
+        return false;
     }
 
     public Student getStudentByUserID(long userId) {
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement("select * from students where user_id = ?")){
-            preparedStatement.setLong(1,userId);
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement("select * from students where user_id = ?")) {
+            preparedStatement.setLong(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Student student = new Student();
@@ -180,6 +137,30 @@ public class StudentDAO extends AbstractDAO<Student> implements GetAllInterface<
             }
         } catch (SQLException e) {
             logger.error("Error occurred while getting student by user ID", e);
-        }return null;
+        }
+        return null;
+    }
+
+    private Student mapResultSetToObject(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String name = resultSet.getString("name");
+        Date admissionDate = resultSet.getDate("admission_date");
+        long userId = resultSet.getLong("user_id");
+        long majorId = resultSet.getLong("major_id");
+        long contactInfoId = resultSet.getLong("contact_info_id");
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.getById(userId);
+        MajorDAO majorDAO = new MajorDAO();
+        Major major = majorDAO.getById(majorId);
+        ContactInfoDAO contactInfoDAO = new ContactInfoDAO();
+        ContactInformation contactInformation = contactInfoDAO.getById(contactInfoId);
+        Student student = new Student();
+        student.setId(id);
+        student.setName(name);
+        student.setAdmissionDate(admissionDate);
+        student.setUserId(user);
+        student.setMajorId(major);
+        student.setContactInfo(contactInformation);
+        return student;
     }
 }

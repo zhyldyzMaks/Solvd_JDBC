@@ -48,13 +48,7 @@ public class ClassDAO extends AbstractDAO<ClassTable> implements GetAllInterface
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                classTable.setId(resultSet.getLong("id"));
-                classTable.setRoomNumber(resultSet.getString("room_number"));
-                classTable.setSchedule(resultSet.getString("schedule"));
-                long courseId = resultSet.getLong("course_id");
-                CourseDAO courseDAO = new CourseDAO();
-                Course course = courseDAO.getById(courseId);
-                classTable.setCourseId(course);
+                classTable = mapResultSetToClassTable(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Error while retrieving class.", e);
@@ -68,13 +62,7 @@ public class ClassDAO extends AbstractDAO<ClassTable> implements GetAllInterface
         try (PreparedStatement preparedStatement = getConnection().prepareStatement("select * from classes")){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                int id = resultSet.getInt("id");
-                String roomNumber = resultSet.getString("room_number");
-                String schedule = resultSet.getString("schedule");
-                int courseId = resultSet.getInt("course_id");
-                CourseDAO courseDAO = new CourseDAO();
-                Course course = courseDAO.getById(courseId);
-                ClassTable classTable = new ClassTable(id, roomNumber, schedule, course);
+                ClassTable classTable = mapResultSetToClassTable(resultSet);
                 allClasses.add(classTable);
             }
         }catch (SQLException e){
@@ -107,5 +95,15 @@ public class ClassDAO extends AbstractDAO<ClassTable> implements GetAllInterface
             logger.error("Error while deleting class.", e);
         }
         return false;
+    }
+
+    private ClassTable mapResultSetToClassTable(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String roomNumber = resultSet.getString("room_number");
+        String schedule = resultSet.getString("schedule");
+        long courseId = resultSet.getLong("course_id");
+        CourseDAO courseDAO = new CourseDAO();
+        Course course = courseDAO.getById(courseId);
+        return new ClassTable(id, roomNumber, schedule, course);
     }
 }

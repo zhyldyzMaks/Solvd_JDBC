@@ -52,18 +52,8 @@ public class TranscriptDAO extends AbstractDAO<Transcript> implements GetAllInte
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                tr.setId(resultSet.getLong("id"));
-                tr.setGrade(resultSet.getString("grade"));
-                tr.setCompletionDate(resultSet.getDate("completion_date"));
-                long studentId = resultSet.getLong("student_id");
-                StudentDAO studentDAO = new StudentDAO();
-                Student student = studentDAO.getById(studentId);
-                tr.setStudent(student);
-                long courseId = resultSet.getLong("course_id");
-                CourseDAO courseDAO = new CourseDAO();
-                Course course = courseDAO.getById(courseId);
-                tr.setCourseId(course);
+            if (resultSet.next()) {
+                tr = mapResultSetToObject(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Error while retrieving transcript.", e);
@@ -77,16 +67,7 @@ public class TranscriptDAO extends AbstractDAO<Transcript> implements GetAllInte
         try (PreparedStatement preparedStatement = getConnection().prepareStatement("select * from transcripts")) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String grade = resultSet.getString("grade");
-                Date completionDate = resultSet.getDate("completion_date");
-                int studentId = resultSet.getInt("student_id");
-                int courseId = resultSet.getInt("course_id");
-                StudentDAO studentDAO = new StudentDAO();
-                Student student = studentDAO.getById(studentId);
-                CourseDAO courseDAO = new CourseDAO();
-                Course course = courseDAO.getById(courseId);
-                Transcript tr = new Transcript(id, grade, completionDate, student, course);
+                Transcript tr = mapResultSetToObject(resultSet);
                 transcripts.add(tr);
             }
         } catch (SQLException e) {
@@ -146,5 +127,18 @@ public class TranscriptDAO extends AbstractDAO<Transcript> implements GetAllInte
             }
             return null;
         }
+    }
+
+    private Transcript mapResultSetToObject(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String grade = resultSet.getString("grade");
+        Date completionDate = resultSet.getDate("completion_date");
+        long studentId = resultSet.getLong("student_id");
+        long courseId = resultSet.getLong("course_id");
+        StudentDAO studentDAO = new StudentDAO();
+        Student student = studentDAO.getById(studentId);
+        CourseDAO courseDAO = new CourseDAO();
+        Course course = courseDAO.getById(courseId);
+        return new Transcript(id, grade, completionDate, student, course);
     }
 }

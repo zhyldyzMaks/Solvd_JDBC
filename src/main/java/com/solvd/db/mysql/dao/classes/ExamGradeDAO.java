@@ -47,17 +47,8 @@ public class ExamGradeDAO extends AbstractDAO<ExamGrade> implements GetAllInterf
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                examGrade.setId(resultSet.getLong("id"));
-                examGrade.setGrade(resultSet.getString("grade"));
-                int examId = resultSet.getInt("exam_id");
-                int studentId = resultSet.getInt("student_id");
-                ExamDAO examDAO = new ExamDAO();
-                Exam exam = examDAO.getById(examId);
-                StudentDAO studentDAO = new StudentDAO();
-                Student student = studentDAO.getById(studentId);
-                examGrade.setExamId(exam);
-                examGrade.setStudentId(student);
+            if (resultSet.next()){
+                examGrade = mapResultSetToExamGrade(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Error while retrieving exam.", e);
@@ -71,15 +62,7 @@ public class ExamGradeDAO extends AbstractDAO<ExamGrade> implements GetAllInterf
         try (PreparedStatement preparedStatement = getConnection().prepareStatement("select * from exam_grades")){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                int id = resultSet.getInt("id");
-                String grade = resultSet.getString("grade");
-                int examId = resultSet.getInt("exam_id");
-                int studentId = resultSet.getInt("student_id");
-                ExamDAO examDAO = new ExamDAO();
-                Exam exam = examDAO.getById(examId);
-                StudentDAO studentDAO = new StudentDAO();
-                Student student = studentDAO.getById(studentId);
-                ExamGrade examGrade = new ExamGrade(id, grade, exam, student);
+                ExamGrade examGrade = mapResultSetToExamGrade(resultSet);
                 allExamGrades.add(examGrade);
             }
         }catch (SQLException e){
@@ -112,5 +95,17 @@ public class ExamGradeDAO extends AbstractDAO<ExamGrade> implements GetAllInterf
             logger.error("Error while deleting exam.", e);
         }
         return false;
+    }
+
+    private ExamGrade mapResultSetToExamGrade(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String grade = resultSet.getString("grade");
+        int examId = resultSet.getInt("exam_id");
+        int studentId = resultSet.getInt("student_id");
+        ExamDAO examDAO = new ExamDAO();
+        Exam exam = examDAO.getById(examId);
+        StudentDAO studentDAO = new StudentDAO();
+        Student student = studentDAO.getById(studentId);
+        return new ExamGrade(id, grade, exam, student);
     }
 }

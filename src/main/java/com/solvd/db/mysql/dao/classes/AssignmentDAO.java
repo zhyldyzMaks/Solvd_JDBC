@@ -47,14 +47,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> implements GetAllInte
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                assignment.setId(resultSet.getLong("id"));
-                assignment.setName(resultSet.getString("name"));
-                assignment.setDueDate(resultSet.getDate("due_date"));
-                assignment.setScore(resultSet.getInt("score"));
-                long classId = resultSet.getLong("class_id");
-                ClassDAO classDAO = new ClassDAO();
-                ClassTable classTable = classDAO.getById(classId);
-                assignment.setClassId(classTable);
+                assignment = mapResultSetToAssignment(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Error while retrieving assignment.", e);
@@ -67,14 +60,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> implements GetAllInte
         try (PreparedStatement preparedStatement = getConnection().prepareStatement("select * from assignments")){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                Date dueDate = resultSet.getDate("due_date");
-                int score = resultSet.getInt("score");
-                int classId = resultSet.getInt("class_id");
-                ClassDAO classDAO = new ClassDAO();
-                ClassTable classTable = classDAO.getById(classId);
-                Assignment assignment = new Assignment(id, name, dueDate, score, classTable);
+                Assignment assignment = mapResultSetToAssignment(resultSet);
                 assignments.add(assignment);
             }
         } catch (SQLException e){
@@ -108,5 +94,16 @@ public class AssignmentDAO extends AbstractDAO<Assignment> implements GetAllInte
             logger.error("Error while deleting assignment.", e);
         }
         return false;
+    }
+
+    private Assignment mapResultSetToAssignment(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String name = resultSet.getString("name");
+        Date dueDate = resultSet.getDate("due_date");
+        int score = resultSet.getInt("score");
+        long classId = resultSet.getLong("class_id");
+        ClassDAO classDAO = new ClassDAO();
+        ClassTable classTable = classDAO.getById(classId);
+        return new Assignment(id, name, dueDate, score, classTable);
     }
 }

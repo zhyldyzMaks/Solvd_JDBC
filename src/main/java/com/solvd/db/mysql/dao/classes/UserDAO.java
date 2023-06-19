@@ -2,9 +2,7 @@ package com.solvd.db.mysql.dao.classes;
 
 import com.solvd.db.mysql.dao.AbstractDAO;
 import com.solvd.db.mysql.dao.GetAllInterface;
-import com.solvd.db.utils.GenericDAO;
 import com.solvd.db.mysql.model.User;
-import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,10 +43,8 @@ public class UserDAO extends AbstractDAO<User> implements GetAllInterface<User> 
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                user.setId(resultSet.getLong("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setPassword(resultSet.getString("password"));
+            if (resultSet.next()){
+                user = mapResultSetToObject(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Error while retrieving user.", e);
@@ -62,11 +58,7 @@ public class UserDAO extends AbstractDAO<User> implements GetAllInterface<User> 
         try (PreparedStatement preparedStatement = getConnection().prepareStatement("select * from users")){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                int id = resultSet.getInt("id");
-                String username = resultSet.getString("username");
-                String password = resultSet.getString("password");
-
-                User user = new User(id, username, password);
+                User user = mapResultSetToObject(resultSet);
                 allUsers.add(user);
             }
         }catch (SQLException e){
@@ -98,5 +90,12 @@ public class UserDAO extends AbstractDAO<User> implements GetAllInterface<User> 
             logger.error("Error while deleting user.", e);
         }
         return false;
+    }
+
+    private User mapResultSetToObject(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String username = resultSet.getString("username");
+        String password = resultSet.getString("password");
+        return new User(id, username, password);
     }
 }

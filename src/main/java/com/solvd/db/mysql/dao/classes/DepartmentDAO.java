@@ -44,8 +44,7 @@ public class DepartmentDAO extends AbstractDAO<Department> implements GetAllInte
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                dept.setId(resultSet.getLong("id"));
-                dept.setName(resultSet.getString("name"));
+                dept = mapResultSetToDepartment(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Error while retrieving department.", e);
@@ -59,9 +58,7 @@ public class DepartmentDAO extends AbstractDAO<Department> implements GetAllInte
         try (PreparedStatement preparedStatement = getConnection().prepareStatement("select * from departments")){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                Department dept = new Department(id, name);
+                Department dept = mapResultSetToDepartment(resultSet);
                 allDepartments.add(dept);
             }
         }catch (SQLException e){
@@ -92,5 +89,11 @@ public class DepartmentDAO extends AbstractDAO<Department> implements GetAllInte
             logger.error("Error while deleting department.", e);
         }
         return false;
+    }
+
+    private Department mapResultSetToDepartment(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String name = resultSet.getString("name");
+        return new Department(id, name);
     }
 }

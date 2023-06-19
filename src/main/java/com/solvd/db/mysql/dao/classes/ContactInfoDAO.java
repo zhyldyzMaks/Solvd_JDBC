@@ -49,12 +49,7 @@ public class ContactInfoDAO extends AbstractDAO<ContactInformation> {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                contactInfo.setId(resultSet.getLong("id"));
-                contactInfo.setName(resultSet.getString("first_name"));
-                contactInfo.setLastName(resultSet.getString("last_name"));
-                contactInfo.setEmail(resultSet.getString("email"));
-                contactInfo.setAddress(resultSet.getString("address"));
-                contactInfo.setPhoneNumber(resultSet.getString("phone_number"));
+                contactInfo = mapResultSetToContactInformation(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Error while getting contact information for student.", e);
@@ -88,5 +83,15 @@ public class ContactInfoDAO extends AbstractDAO<ContactInformation> {
             logger.error("Error while deleting contact information for student.", e);
         }
         return false;
+    }
+
+    private ContactInformation mapResultSetToContactInformation(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String firstName = resultSet.getString("first_name");
+        String lastName = resultSet.getString("last_name");
+        String email = resultSet.getString("email");
+        String address = resultSet.getString("address");
+        String phoneNumber = resultSet.getString("phone_number");
+        return new ContactInformation(id, firstName, lastName, email, address, phoneNumber);
     }
 }

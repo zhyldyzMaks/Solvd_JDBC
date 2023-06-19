@@ -48,13 +48,7 @@ public class CourseDAO extends AbstractDAO<Course> implements GetAllInterface<Co
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                course.setId(resultSet.getLong("id"));
-                course.setName(resultSet.getString("name"));
-                long deptId = resultSet.getLong("department_id");
-                DepartmentDAO departmentDAO = new DepartmentDAO();
-                Department department = departmentDAO.getById(deptId);
-                course.setDepartmentId(department);
-                course.setCredits(resultSet.getInt("credits"));
+                course = mapResultSetToCourse(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Error while retrieving course.", e);
@@ -68,13 +62,7 @@ public class CourseDAO extends AbstractDAO<Course> implements GetAllInterface<Co
         try (PreparedStatement preparedStatement = getConnection().prepareStatement("select * from courses")){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                int deptId = resultSet.getInt("department_id");
-                int credit = resultSet.getInt("credits");
-                DepartmentDAO departmentDAO = new DepartmentDAO();
-                Department department = departmentDAO.getById(deptId);
-                Course course = new Course(id, name, credit, department);
+                Course course = mapResultSetToCourse(resultSet);
                 allCourses.add(course);
             }
         }catch (SQLException e){
@@ -107,5 +95,15 @@ public class CourseDAO extends AbstractDAO<Course> implements GetAllInterface<Co
             logger.error("Error while deleting course.", e);
         }
         return false;
+    }
+
+    private Course mapResultSetToCourse(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String name = resultSet.getString("name");
+        int credits = resultSet.getInt("credits");
+        long departmentId = resultSet.getLong("department_id");
+        DepartmentDAO departmentDAO = new DepartmentDAO();
+        Department department = departmentDAO.getById(departmentId);
+        return new Course(id, name, credits, department);
     }
 }

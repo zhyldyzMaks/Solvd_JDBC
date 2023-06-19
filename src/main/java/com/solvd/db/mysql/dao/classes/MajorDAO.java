@@ -46,14 +46,8 @@ public class MajorDAO extends AbstractDAO<Major> implements GetAllInterface<Majo
         try (PreparedStatement statement = getConnection().prepareStatement(selectQuery)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
-                major.setId(resultSet.getLong("id"));
-                major.setName(resultSet.getString("name"));
-                major.setDescription(resultSet.getString("description"));
-                long departmentId = resultSet.getLong("dep_id");
-                DepartmentDAO departmentDAO = new DepartmentDAO();
-                Department department = departmentDAO.getById(departmentId);
-                major.setDepartment(department);
+            if (resultSet.next()){
+                major = mapResultSetToObject(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Error while retrieving major.", e);
@@ -79,13 +73,7 @@ public class MajorDAO extends AbstractDAO<Major> implements GetAllInterface<Majo
         try (PreparedStatement statement = getConnection().prepareStatement("select * from majors")){
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                String description = resultSet.getString("description");
-                int deptId = resultSet.getInt("dep_id");
-                DepartmentDAO departmentDAO = new DepartmentDAO();
-                Department department = departmentDAO.getById(deptId);
-                Major major = new Major(id, name, description,department);
+                Major major = mapResultSetToObject(resultSet);
                 allMajors.add(major);
             }
         }catch (SQLException e){
@@ -106,5 +94,20 @@ public class MajorDAO extends AbstractDAO<Major> implements GetAllInterface<Majo
         } catch (SQLException e) {
             logger.error("Error while updating major.", e);
         }return false;
+    }
+
+    private Major mapResultSetToObject(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String name = resultSet.getString("name");
+        String description = resultSet.getString("description");
+        long departmentId = resultSet.getLong("dep_id");
+        DepartmentDAO departmentDAO = new DepartmentDAO();
+        Department department = departmentDAO.getById(departmentId);
+        Major major = new Major();
+        major.setId(id);
+        major.setName(name);
+        major.setDescription(description);
+        major.setDepartment(department);
+        return major;
     }
 }
