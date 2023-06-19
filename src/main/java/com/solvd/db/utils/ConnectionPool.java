@@ -19,7 +19,6 @@ public class ConnectionPool {
     private static List<Connection> connectionPool;
     private static final int maxConnections = 5;
 
-
     public ConnectionPool() {
         connectionPool = new ArrayList<>();
         initializeConnectionPool();

@@ -15,7 +15,7 @@ public class DepartmentDAO extends AbstractDAO<Department> implements GetAllInte
     private static final Logger logger = LogManager.getLogger(DepartmentDAO.class);
     private static final String insertQuery = "insert into departments (name) values(?)";
     private static final String updateQuery = "update departments set name = ? where id = ?";
-    private static final String readQuery = "select * from departments where id = ?";
+    private static final String selectQuery = "select * from departments where id = ?";
     private static final String deleteQuery = "delete from departments where id = ?";
 
     @Override
@@ -40,7 +40,7 @@ public class DepartmentDAO extends AbstractDAO<Department> implements GetAllInte
     @Override
     public Department getById(long id) {
         Department dept = new Department();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(readQuery)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){

@@ -16,7 +16,7 @@ public class UserDAO extends AbstractDAO<User> implements GetAllInterface<User> 
     private static final Logger logger = LogManager.getLogger(UserDAO.class);
     private static final String insertQuery = "insert into users (username, password) values(?,?)";
     private static final String updateQuery = "update users set username = ?, password = ? where id = ?";
-    private static final String readQuery = "select * from users where id = ?";
+    private static final String selectQuery = "select * from users where id = ?";
     private static final String deleteQuery = "delete from users where id = ?";
 
     public boolean create(User user) {
@@ -42,7 +42,7 @@ public class UserDAO extends AbstractDAO<User> implements GetAllInterface<User> 
     @Override
     public User getById(long id){
         User user = new User();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(readQuery)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){

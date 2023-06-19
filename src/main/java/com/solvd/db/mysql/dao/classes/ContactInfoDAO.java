@@ -16,7 +16,7 @@ public class ContactInfoDAO extends AbstractDAO<ContactInformation> {
             "values(?,?,?,?,?)";
     private static final String updateQuery = "update contact_information set  first_name = ?, last_name = ?, email = ?," +
             " address = ?, phone_number = ? where id = ?";
-    private static final String readQuery = "select * from contact_information where id = ?";
+    private static final String selectQuery = "select * from contact_information where id = ?";
     private static final String deleteQuery = "delete from contact_information where id = ?";
 
     public boolean create(ContactInformation contactInfo) {
@@ -45,7 +45,7 @@ public class ContactInfoDAO extends AbstractDAO<ContactInformation> {
     @Override
     public ContactInformation getById(long id) {
         ContactInformation contactInfo = new ContactInformation();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(readQuery)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){

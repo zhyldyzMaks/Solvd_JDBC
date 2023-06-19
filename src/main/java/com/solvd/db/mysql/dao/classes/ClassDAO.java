@@ -16,7 +16,7 @@ public class ClassDAO extends AbstractDAO<ClassTable> implements GetAllInterface
     private static final Logger logger = LogManager.getLogger(ClassDAO.class);
     private static final String insertQuery = "insert into classes  (room_number, schedule, course_id) values(?,?,?)";
     private static final String updateQuery = "update classes set room_number = ?, schedule = ?, course_id = ? where id = ?";
-    private static final String readQuery = "select * from classes where id = ?";
+    private static final String selectQuery = "select * from classes where id = ?";
     private static final String deleteQuery = "delete from classes where id = ?";
 
     @Override
@@ -44,7 +44,7 @@ public class ClassDAO extends AbstractDAO<ClassTable> implements GetAllInterface
     @Override
     public ClassTable getById(long id) {
         ClassTable classTable = new ClassTable();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(readQuery)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){

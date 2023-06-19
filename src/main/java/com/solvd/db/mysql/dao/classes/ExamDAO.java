@@ -16,7 +16,7 @@ public class ExamDAO extends AbstractDAO<Exam> implements GetAllInterface<Exam> 
     private static final Logger logger = LogManager.getLogger(ExamDAO.class);
     private static final  String insertQuery = "insert into exams(name, date, course_id) values(?,?,?)";
     private static final  String updateQuery = "update exams set name = ?, date = ?, course_id = ? where id = ?";
-    private static final String readQuery = "select * from exams where id = ?";
+    private static final String selectQuery = "select * from exams where id = ?";
     private static final String deleteQuery = "delete from exams where id = ?";
 
     @Override
@@ -43,7 +43,7 @@ public class ExamDAO extends AbstractDAO<Exam> implements GetAllInterface<Exam> 
     @Override
     public Exam getById(long id){
         Exam exam = new Exam();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(readQuery)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){

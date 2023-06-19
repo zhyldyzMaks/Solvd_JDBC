@@ -20,8 +20,8 @@ public class StudentDAO extends AbstractDAO<Student> implements GetAllInterface<
             "user_id, major_id, contact_info_id) values (?,?,?,?,?,?)";
     private static final String updateStudentQuery = "update students set name = ?, admission_date = ?, user_id = ?," +
             " major_id = ?, contact_info_id = ? where id = ?";
-    private static final String readQuery = "select * from students where id = ?";
-    private static final String readAllQuery = "SELECT * FROM students";
+    private static final String selectQuery = "select * from students where id = ?";
+    private static final String selectAllQuery = "SELECT * FROM students";
     private static final String deleteQuery = "delete from students where id = ?";
 
     @Override
@@ -43,7 +43,7 @@ public class StudentDAO extends AbstractDAO<Student> implements GetAllInterface<
 
     @Override
     public Student getById(long id) {
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(readQuery)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -102,7 +102,7 @@ public class StudentDAO extends AbstractDAO<Student> implements GetAllInterface<
     @Override
     public List<Student> getAll() {
         List<Student> allStudents = new ArrayList<>();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(readAllQuery)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectAllQuery)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             UserDAO userDAO = new UserDAO();
             MajorDAO majorDAO = new MajorDAO();

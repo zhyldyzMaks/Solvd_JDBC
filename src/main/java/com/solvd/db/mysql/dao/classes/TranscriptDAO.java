@@ -19,7 +19,7 @@ public class TranscriptDAO extends AbstractDAO<Transcript> implements GetAllInte
             "values(?,?,?,?)";
     private static final String updateQuery = "update transcripts set grade = ?, completion_date = ?, student_id = ?," +
             " course_id = ? where id = ?";
-    private static final String readQuery = "select * from transcripts where id = ?";
+    private static final String selectQuery = "select * from transcripts where id = ?";
     private static final String deleteQuery = "delete from transcripts where id = ?";
 
     @Override
@@ -49,7 +49,7 @@ public class TranscriptDAO extends AbstractDAO<Transcript> implements GetAllInte
     @Override
     public Transcript getById(long id) {
         Transcript tr = new Transcript();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(readQuery)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {

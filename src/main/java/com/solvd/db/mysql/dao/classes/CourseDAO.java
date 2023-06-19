@@ -19,7 +19,7 @@ public class CourseDAO extends AbstractDAO<Course> implements GetAllInterface<Co
     private static final Logger logger = LogManager.getLogger(CourseDAO.class);
     private static final String insertQuery = "insert into courses (id, name, admission_date) values (?,?,?)";
     private static final String updateQuery = "update courses set name = ?, department_id = ?, credits = ? where id = ?";
-    private static final String readQuery = "select * from courses where id = ?";
+    private static final String selectQuery = "select * from courses where id = ?";
     private static final String deleteQuery = "delete from courses where id = ?";
 
     @Override
@@ -44,7 +44,7 @@ public class CourseDAO extends AbstractDAO<Course> implements GetAllInterface<Co
     @Override
     public Course getById(long id) {
         Course course = new Course();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(readQuery)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){

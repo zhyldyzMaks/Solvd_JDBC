@@ -15,7 +15,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> implements GetAllInte
     private static final String insertQuery = "insert into assignments(name, due_date, score, class_id) " +
             "values(?,?,?,?)";
     private static final String updateQuery = "update assignments set name = ?, due_date = ?, score = ?, class_id = ? where id = ?";
-    private static final String readQuery = "select * from assignments where id = ?";
+    private static final String selectQuery = "select * from assignments where id = ?";
     private static final String deleteQuery = "delete from assignments where id = ?";
 
     @Override
@@ -43,7 +43,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> implements GetAllInte
     @Override
     public Assignment getById(long id) {
         Assignment assignment = new Assignment();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(readQuery)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){

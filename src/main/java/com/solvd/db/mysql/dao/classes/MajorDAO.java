@@ -16,7 +16,7 @@ public class MajorDAO extends AbstractDAO<Major> implements GetAllInterface<Majo
     private static final Logger logger = LogManager.getLogger(MajorDAO.class);
     private static final String insertQuery = "insert into majors  (name, description, department_id) values(?,?,?)";
     private static final String updateQuery = "update majors set name = ?, description = ?, dep_id = ? where id = ?";
-    private static final String readQuery = "select * from majors where id = ?";
+    private static final String selectQuery = "select * from majors where id = ?";
     private static final String deleteQuery = "delete from majors where id = ?";
 
     @Override
@@ -43,7 +43,7 @@ public class MajorDAO extends AbstractDAO<Major> implements GetAllInterface<Majo
     @Override
     public Major getById(long id){
         Major major = new Major();
-        try (PreparedStatement statement = getConnection().prepareStatement(readQuery)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(selectQuery)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){

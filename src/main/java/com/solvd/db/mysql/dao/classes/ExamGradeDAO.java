@@ -17,7 +17,7 @@ public class ExamGradeDAO extends AbstractDAO<ExamGrade> implements GetAllInterf
     private static final Logger logger = LogManager.getLogger(ExamGradeDAO.class);
     private static final String insertQuery = "insert into exam_grades (grade, exam_id) values(?,?)";
     private static final String updateQuery = "update exam_grades set grade = ?, exam_id = ?, student_id = ? where id = ?";
-    private static final String readQuery = "select * from exam_grades where id = ?";
+    private static final String selectQuery = "select * from exam_grades where id = ?";
     private static final String deleteQuery = "delete from exam_grades where id = ?";
 
     @Override
@@ -44,7 +44,7 @@ public class ExamGradeDAO extends AbstractDAO<ExamGrade> implements GetAllInterf
     @Override
     public ExamGrade getById(long id){
         ExamGrade examGrade = new ExamGrade();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(readQuery)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
