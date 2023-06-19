@@ -1,14 +1,32 @@
 package com.solvd.db.mysql.model;
 
-import java.sql.Date;
+import jakarta.xml.bind.annotation.*;
 
+import java.sql.Date;
+import java.util.List;
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "student")
 public class Student {
+    @XmlElement
     private long id;
+    @XmlElement
     private String name;
+    @XmlElement
     private Date admissionDate;
+    @XmlElement
     private User userId;
+    @XmlElement
     private Major majorId;
+    @XmlElement
     private ContactInformation contactInfoId;
+    @XmlElement
+    private Transcript transcript;
+    @XmlElementWrapper(name = "enrollments")
+    @XmlElement(name = "enrollment")
+    private List<Enrollment> enrollmentsForStudent;
+    @XmlElementWrapper(name = "exam_grades")
+    @XmlElement(name = "exam_grade")
+    private List<ExamGrade> allGrades;
 
     public Student(){}
     public Student(long id, String name, Date admissionDate) {
@@ -76,6 +94,30 @@ public class Student {
         this.contactInfoId = contactInfoId;
     }
 
+    public Transcript getTranscript() {
+        return transcript;
+    }
+
+    public void setTranscript(Transcript transcript) {
+        this.transcript = transcript;
+    }
+
+    public List<Enrollment> getEnrollmentsForStudent() {
+        return enrollmentsForStudent;
+    }
+
+    public void setEnrollmentsForStudent(List<Enrollment> enrollmentsForStudent) {
+        this.enrollmentsForStudent = enrollmentsForStudent;
+    }
+
+    public List<ExamGrade> getAllGrades() {
+        return allGrades;
+    }
+
+    public void setAllGrades(List<ExamGrade> allGrades) {
+        this.allGrades = allGrades;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -85,6 +127,9 @@ public class Student {
                 ", userId=" + userId +
                 ", majorId=" + majorId +
                 ", contactInfoId=" + contactInfoId +
+                ", transcript=" + transcript +
+                ", enrollmentsForStudent=" + enrollmentsForStudent +
+                ", allGrades=" + allGrades +
                 '}';
     }
 }

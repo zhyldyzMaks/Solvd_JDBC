@@ -3,7 +3,6 @@ package com.solvd.db.mysql.dao.classes;
 import com.solvd.db.mysql.dao.AbstractDAO;
 import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.Department;
-import com.solvd.db.utils.ConnectionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

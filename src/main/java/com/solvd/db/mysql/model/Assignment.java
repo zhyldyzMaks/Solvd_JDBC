@@ -1,13 +1,24 @@
 package com.solvd.db.mysql.model;
 
-import java.sql.Date;
+import com.solvd.db.utils.DateAdapter;
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import java.sql.Date;
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "assignment")
 public class Assignment {
+    @XmlAttribute
     private long id;
+    @XmlElement
     private String name;
+    @XmlJavaTypeAdapter(DateAdapter.class)
     private Date dueDate;
+    @XmlElement
     private int score;
+    @XmlAttribute
     private ClassTable classId;
+
 
     public Assignment(){}
 

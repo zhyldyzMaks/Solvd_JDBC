@@ -4,7 +4,6 @@ import com.solvd.db.mysql.dao.AbstractDAO;
 import com.solvd.db.mysql.dao.IDAO;
 import com.solvd.db.mysql.model.Course;
 import com.solvd.db.mysql.model.Exam;
-import com.solvd.db.utils.ConnectionManager;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,11 +1,21 @@
 package com.solvd.db.mysql.model;
 
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "contact_information")
 public class ContactInformation {
+    @XmlAttribute
     private long id;
+    @XmlElement
     private String name;
+    @XmlElement
     private String lastName;
+    @XmlElement
     private String email;
+    @XmlElement
     private String address;
+    @XmlElement
     private String phoneNumber;
 
     public ContactInformation(){}

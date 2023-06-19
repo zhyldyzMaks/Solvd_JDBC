@@ -1,7 +1,8 @@
 package com.solvd.db.mysql.dao.classes;
 
 import com.solvd.db.mysql.dao.AbstractDAO;
-import com.solvd.db.mysql.dao.IDAO;
+import com.solvd.db.mysql.dao.GetAllInterface;
+import com.solvd.db.utils.GenericDAO;
 import com.solvd.db.mysql.model.Department;
 import com.solvd.db.mysql.model.Major;
 import com.solvd.db.utils.ConnectionPool;
@@ -11,40 +12,38 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MajorDAO extends AbstractDAO<Major> implements IDAO<Major> {
-    private static final Logger logger = LogManager.getLogger(TranscriptDAO.class);
-    public static final String insertQuery = "insert into majors  (name, description, department_id) values(?,?,?)";
-    public static final String updateQuery = "update majors set name = ?, description = ?, dep_id = ? where id = ?";
+public class MajorDAO extends AbstractDAO<Major> implements GetAllInterface<Major> {
+    private static final Logger logger = LogManager.getLogger(MajorDAO.class);
+    private static final String insertQuery = "insert into majors  (name, description, department_id) values(?,?,?)";
+    private static final String updateQuery = "update majors set name = ?, description = ?, dep_id = ? where id = ?";
+    private static final String readQuery = "select * from majors where id = ?";
+    private static final String deleteQuery = "delete from majors where id = ?";
 
     @Override
     public boolean create(Major major) {
-        ConnectionPool connectionPool = new ConnectionPool();
-        try ( Connection connection = connectionPool.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement statement = getConnection().prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, major.getName());
             statement.setString(2, major.getDescription());
             statement.setLong(3,major.getDepartmentId().getId());
-
             if (statement.executeUpdate()>0){
                 ResultSet resultSet = statement.getGeneratedKeys();
                 if (resultSet.next()){
                     long generatedId = resultSet.getLong(1);
                     logger.info("Major created with ID: " + generatedId);
+                    return true;
                 }
             } else {
                 logger.warn("Failed to create major.");
-                return false;
             }
         } catch (SQLException e) {
             logger.error("Error while creating major.", e);
         } return false;
     }
+
     @Override
     public Major getById(long id){
-        ConnectionPool connectionPool = new ConnectionPool();
         Major major = new Major();
-        try ( Connection connection = connectionPool.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("select * from majors where id = ?");
+        try (PreparedStatement statement = getConnection().prepareStatement(readQuery)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
@@ -61,11 +60,10 @@ public class MajorDAO extends AbstractDAO<Major> implements IDAO<Major> {
         }
         return major;
     }
+
     @Override
     public boolean delete(long id){
-        ConnectionPool connectionPool = new ConnectionPool();
-        try(Connection connection = connectionPool.getConnection()){
-            PreparedStatement statement = connection.prepareStatement("delete from majors where id = ?");
+        try (PreparedStatement statement = getConnection().prepareStatement(deleteQuery)){
             statement.setLong(1,id);
             int deletedRows = statement.executeUpdate();
             return  deletedRows > 0;
@@ -74,14 +72,12 @@ public class MajorDAO extends AbstractDAO<Major> implements IDAO<Major> {
         }
         return false;
     }
+
     @Override
     public List<Major> getAll(){
-        ConnectionPool connectionPool = new ConnectionPool();
         List<Major> allMajors = new ArrayList<>();
-        try(Connection connection = connectionPool.getConnection()){
-            PreparedStatement statement = connection.prepareStatement("select * from majors");
+        try (PreparedStatement statement = getConnection().prepareStatement("select * from majors")){
             ResultSet resultSet = statement.executeQuery();
-
             while (resultSet.next()){
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
@@ -89,7 +85,6 @@ public class MajorDAO extends AbstractDAO<Major> implements IDAO<Major> {
                 int deptId = resultSet.getInt("dep_id");
                 DepartmentDAO departmentDAO = new DepartmentDAO();
                 Department department = departmentDAO.getById(deptId);
-
                 Major major = new Major(id, name, description,department);
                 allMajors.add(major);
             }
@@ -101,14 +96,11 @@ public class MajorDAO extends AbstractDAO<Major> implements IDAO<Major> {
 
     @Override
     public boolean update(Major major) {
-        ConnectionPool connectionPool = new ConnectionPool();
-        try (Connection connection = connectionPool.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(updateQuery);
+        try (PreparedStatement statement = getConnection().prepareStatement(updateQuery)) {
             statement.setString(1, major.getName());
             statement.setString(2, major.getDescription());
             statement.setLong(3, major.getDepartmentId().getId());
             statement.setLong(4, major.getId());
-
             int updatedRows = statement.executeUpdate();
             return updatedRows > 0;
         } catch (SQLException e) {

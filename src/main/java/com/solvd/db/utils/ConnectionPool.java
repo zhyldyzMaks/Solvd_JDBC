@@ -1,5 +1,9 @@
 package com.solvd.db.utils;
 
+import com.solvd.db.mysql.dao.classes.AssignmentDAO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +15,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class ConnectionPool {
+    private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
     private static List<Connection> connectionPool;
     private static final int maxConnections = 5;
 
@@ -27,7 +32,7 @@ public class ConnectionPool {
                 connectionPool.add(connection);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error while initializing connection pool.", e);
         }
     }
 
@@ -36,23 +41,20 @@ public class ConnectionPool {
         try (InputStream input = new FileInputStream("src/main/resources/db.properties")) {
             properties.load(input);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error while loading db.properties file", e);
         }
-
         String url = properties.getProperty("db.url");
         String username = properties.getProperty("db.user");
         String password = properties.getProperty("db.password");
-
         return DriverManager.getConnection(url, username, password);
     }
-
 
     public synchronized Connection getConnection() {
         while (connectionPool.isEmpty()) {
             try {
                 wait();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("Error while waiting to a connection", e);
             }
         }
         return connectionPool.remove(connectionPool.size() - 1);

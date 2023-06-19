@@ -1,9 +1,17 @@
 package com.solvd.db.mysql.model;
 
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "exam_grade")
 public class ExamGrade {
+    @XmlAttribute
     private long id;
+    @XmlElement
     private String grade;
+    @XmlElement
     private Exam examId;
+    @XmlElement
     private Student studentId;
 
     public ExamGrade(){}

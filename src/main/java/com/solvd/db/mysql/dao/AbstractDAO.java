@@ -1,7 +1,18 @@
 package com.solvd.db.mysql.dao;
 
-import java.util.List;
+import com.solvd.db.utils.ConnectionPool;
+import com.solvd.db.utils.GenericDAO;
 
-public abstract class AbstractDAO<T> {
-    protected abstract List<T> getAll();
+import java.sql.Connection;
+
+public abstract class AbstractDAO<T> implements GenericDAO<T> {
+    private ConnectionPool connectionPool;
+
+    public AbstractDAO() {
+        connectionPool = new ConnectionPool();
+    }
+
+    protected Connection getConnection() {
+        return connectionPool.getConnection();
+    }
 }
