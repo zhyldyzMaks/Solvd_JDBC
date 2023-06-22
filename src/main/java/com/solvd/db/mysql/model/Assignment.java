@@ -1,6 +1,10 @@
 package com.solvd.db.mysql.model;
 
-import com.solvd.db.utils.DateAdapter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.solvd.db.utils.JAXBDateAdapter;
+import com.solvd.db.utils.JSONDateAdapter;
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -9,31 +13,36 @@ import java.sql.Date;
 @XmlRootElement(name = "assignment")
 public class Assignment {
     @XmlAttribute
+    @JsonProperty("id")
     private long id;
     @XmlElement
+    @JsonProperty("name")
     private String name;
-    @XmlJavaTypeAdapter(DateAdapter.class)
+    //@XmlJavaTypeAdapter(JAXBDateAdapter.class)
+    @JsonSerialize(using = JSONDateAdapter.class)
     private Date dueDate;
     @XmlElement
-    private int score;
+    @JsonProperty("max_score")
+    private int maxScore;
     @XmlAttribute
+    @JsonProperty("class_id")
     private ClassTable classId;
 
 
     public Assignment(){}
 
-    public Assignment(String name, Date dueDate, int score, ClassTable classId) {
+    public Assignment(String name, Date dueDate, int maxScore, ClassTable classId) {
         this.name = name;
         this.dueDate = dueDate;
-        this.score = score;
+        this.maxScore = maxScore;
         this.classId = classId;
     }
 
-    public Assignment(long id, String name, Date dueDate, int score, ClassTable classId) {
+    public Assignment(long id, String name, Date dueDate, int maxScore, ClassTable classId) {
         this.id = id;
         this.name = name;
         this.dueDate = dueDate;
-        this.score = score;
+        this.maxScore = maxScore;
         this.classId = classId;
     }
 
@@ -62,11 +71,11 @@ public class Assignment {
     }
 
     public int getScore() {
-        return score;
+        return maxScore;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setScore(int maxScore) {
+        this.maxScore = maxScore;
     }
 
     public ClassTable getClassId() {
@@ -83,7 +92,7 @@ public class Assignment {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", due date='" + dueDate + '\'' +
-                ", score=" + score +
+                ", maximum score=" + maxScore +
                 ", class id=" + classId +
                 '}';
     }

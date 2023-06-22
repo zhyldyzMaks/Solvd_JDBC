@@ -1,21 +1,29 @@
 package com.solvd.db.mysql.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.xml.bind.annotation.*;
-
+@JsonRootName(value = "contact_information")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "contact_information")
 public class ContactInformation {
     @XmlAttribute
+    @JsonProperty("id")
     private long id;
     @XmlElement
+    @JsonProperty("first_name")
     private String name;
     @XmlElement
+    @JsonProperty("last_name")
     private String lastName;
     @XmlElement
+    @JsonProperty("email")
     private String email;
     @XmlElement
+    @JsonProperty("address")
     private String address;
     @XmlElement
+    @JsonProperty("phone_number")
     private String phoneNumber;
 
     public ContactInformation(){}
