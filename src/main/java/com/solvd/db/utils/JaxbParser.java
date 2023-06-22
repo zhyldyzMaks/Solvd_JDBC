@@ -11,8 +11,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.util.List;
 
-public class JaxbParser {
-    private static final Logger logger = LogManager.getLogger(JaxbParser.class);
+public class JAXBParser {
+    private static final Logger logger = LogManager.getLogger(JAXBParser.class);
     private Course course;
 
     public void unmarshalXml(){
@@ -51,7 +51,7 @@ public class JaxbParser {
     }
 
     public static void main(String[] args) {
-        JaxbParser jaxbParser = new JaxbParser();
+        JAXBParser jaxbParser = new JAXBParser();
         Course course = new Course();
         jaxbParser.setCourse(course);
         jaxbParser.marshalXml();
