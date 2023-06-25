@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class ConnectionPool {
     private static List<Connection> connectionPool;
-    private static final int maxConnections = 5;
+    private static final int maxConnections = 10;
 
 
     public ConnectionPool() {
@@ -45,7 +45,6 @@ public class ConnectionPool {
 
         return DriverManager.getConnection(url, username, password);
     }
-
 
     public synchronized Connection getConnection() {
         while (connectionPool.isEmpty()) {
