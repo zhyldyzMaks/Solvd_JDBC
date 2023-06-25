@@ -4,7 +4,6 @@ import com.solvd.db.mysql.dao.GetAllInterface;
 import com.solvd.db.mysql.dao.classes.AssignmentDAO;
 import com.solvd.db.mysql.model.Assignment;
 import com.solvd.db.utils.GenericDAO;
-
 import java.util.List;
 
 public class AssignmentService implements GenericDAO<Assignment>, GetAllInterface<Assignment> {

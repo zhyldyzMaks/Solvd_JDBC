@@ -1,9 +1,9 @@
 package com.solvd.db.mysql.model;
 
 import jakarta.xml.bind.annotation.*;
-
 import java.sql.Date;
 import java.util.List;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "student")
 public class Student {

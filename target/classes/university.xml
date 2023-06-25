@@ -12,10 +12,10 @@
                         <username>Alex</username>
                         <password>alex123</password>
                     </user_id>
-                    <major_id id ="2">
+                    <major_id id ="1">
                         <name>Computer Science</name>
                         <description>A field of study that focuses on programming, and software development</description>
-                        <department_id id = "2">
+                        <department_id id = "1">
                             <name>School of Engineering</name>
                         </department_id>
                     </major_id>
@@ -41,7 +41,7 @@
             <major_id id ="1">
                 <name>Psychology</name>
                 <description>The scientific study of the human mind and behavior.</description>
-                <department_id id = "1">
+                <department_id id = "">
                     <name>Social Studies Department</name>
                 </department_id>
             </major_id>

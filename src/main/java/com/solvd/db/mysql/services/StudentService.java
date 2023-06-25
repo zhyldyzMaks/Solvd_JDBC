@@ -4,7 +4,6 @@ import com.solvd.db.mysql.dao.GetAllInterface;
 import com.solvd.db.mysql.dao.classes.StudentDAO;
 import com.solvd.db.mysql.model.Student;
 import com.solvd.db.utils.GenericDAO;
-
 import java.util.List;
 
 public class StudentService implements GenericDAO<Student>, GetAllInterface<Student> {

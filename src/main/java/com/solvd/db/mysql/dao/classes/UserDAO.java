@@ -5,7 +5,6 @@ import com.solvd.db.mysql.dao.GetAllInterface;
 import com.solvd.db.mysql.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

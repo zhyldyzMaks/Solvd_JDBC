@@ -4,7 +4,6 @@ import com.solvd.db.mysql.dao.GetAllInterface;
 import com.solvd.db.mysql.dao.classes.EnrollmentDAO;
 import com.solvd.db.mysql.model.Enrollment;
 import com.solvd.db.utils.GenericDAO;
-
 import java.util.List;
 
 public class EnrollmentService implements GenericDAO<Enrollment>, GetAllInterface<Enrollment> {

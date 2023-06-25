@@ -2,7 +2,6 @@ package com.solvd.db.mysql;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.solvd.db.mysql.model.*;
-
 import java.util.List;
 
 public class University {

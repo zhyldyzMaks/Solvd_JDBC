@@ -6,7 +6,6 @@ import com.solvd.db.mysql.dao.classes.UserDAO;
 import com.solvd.db.mysql.model.Student;
 import com.solvd.db.mysql.model.User;
 import com.solvd.db.utils.GenericDAO;
-
 import java.sql.SQLException;
 import java.util.List;
 

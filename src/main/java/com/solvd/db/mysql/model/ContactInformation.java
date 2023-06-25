@@ -3,6 +3,7 @@ package com.solvd.db.mysql.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.xml.bind.annotation.*;
+
 @JsonRootName(value = "contact_information")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "contact_information")

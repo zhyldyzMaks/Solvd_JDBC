@@ -2,11 +2,9 @@ package com.solvd.db.mysql.dao.classes;
 
 import com.solvd.db.mysql.dao.AbstractDAO;
 import com.solvd.db.mysql.dao.GetAllInterface;
-import com.solvd.db.utils.GenericDAO;
 import com.solvd.db.mysql.model.Exam;
 import com.solvd.db.mysql.model.ExamGrade;
 import com.solvd.db.mysql.model.Student;
-import com.solvd.db.utils.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.*;

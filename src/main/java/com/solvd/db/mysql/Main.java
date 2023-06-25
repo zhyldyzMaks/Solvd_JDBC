@@ -1,7 +1,6 @@
 package com.solvd.db.mysql;
 
 import com.solvd.db.mysql.dao.classes.StudentDAO;
-import com.solvd.db.mysql.dao.classes.TranscriptDAO;
 import com.solvd.db.mysql.dao.classes.UserDAO;
 import com.solvd.db.mysql.model.ContactInformation;
 import com.solvd.db.mysql.model.Major;
@@ -10,14 +9,14 @@ import com.solvd.db.mysql.model.User;
 import com.solvd.db.mysql.services.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
+
     public static void main(String[] args) {
-        Logger logger = LogManager.getLogger(TranscriptDAO.class);
+        Logger logger = LogManager.getLogger(Main.class);
 
         User user = new User();
         user.setUsername("Ronaldo");
@@ -40,7 +39,7 @@ public class Main {
 
         UserService userService = new UserService();
         try {
-            userService.getUser(16);
+            userService.getUser(user1,15);
         } catch (SQLException e) {
             logger.info("Error while retrieving user by student id.", e);
         }

@@ -4,7 +4,6 @@ import com.solvd.db.mysql.dao.GetAllInterface;
 import com.solvd.db.mysql.dao.classes.MajorDAO;
 import com.solvd.db.mysql.model.Major;
 import com.solvd.db.utils.GenericDAO;
-
 import java.util.List;
 
 public class MajorService implements GenericDAO<Major>, GetAllInterface<Major> {

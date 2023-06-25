@@ -4,7 +4,6 @@ import com.solvd.db.mysql.dao.GetAllInterface;
 import com.solvd.db.mysql.dao.classes.DepartmentDAO;
 import com.solvd.db.mysql.model.Department;
 import com.solvd.db.utils.GenericDAO;
-
 import java.util.List;
 
 public class DepartmentService implements GenericDAO<Department>, GetAllInterface<Department> {

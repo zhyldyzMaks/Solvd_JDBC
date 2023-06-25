@@ -1,14 +1,11 @@
 package com.solvd.db.mysql.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.solvd.db.utils.JAXBDateAdapter;
 import com.solvd.db.utils.JSONDateAdapter;
 import jakarta.xml.bind.annotation.*;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import java.sql.Date;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "assignment")
 public class Assignment {

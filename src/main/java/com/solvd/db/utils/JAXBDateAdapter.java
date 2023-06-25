@@ -1,7 +1,6 @@
 package com.solvd.db.utils;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

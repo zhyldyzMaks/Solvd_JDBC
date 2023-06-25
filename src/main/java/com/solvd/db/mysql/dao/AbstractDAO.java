@@ -15,5 +15,4 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
     protected Connection getConnection() {
         return connectionPool.getConnection();
     }
-
 }
