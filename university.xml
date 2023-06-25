@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<university>
+    <users>
+        <user id = "1">
+            <username>Alex</username>
+            <password>alex123</password>
+            <student_id id = "01">
+                <student id = "01">
+                    <name>Alex Bold</name>
+                    <admission_date>2002-09-01</admission_date>
+                    <user_id id= "1">
+                        <username>Alex</username>
+                        <password>alex123</password>
+                    </user_id>
+                    <major_id id ="1">
+                        <name></name>
+                        <description></description>
+                        <department_id id = "">
+                            <name></name>
+                        </department_id>
+                    </major_id>
+                    <contact_info_id id  = "1">
+                        <first_name>Alex</first_name>
+                        <last_name>Bold</last_name>
+                        <email>alexbold@email.com</email>
+                        <address>123 Sunny Rd</address>
+                        <phone_number>123-456-4566</phone_number>
+                    </contact_info_id>
+                </student>
+            </student_id>
+        </user>
+    </users>
+    <students>
+        <student id = "01">
+            <name>Alex Bold</name>
+            <admission_date>2002-09-01</admission_date>
+            <user_id id= "1">
+                <username>Alex</username>
+                <password>alex123</password>
+            </user_id>
+            <major_id id ="1">
+                <name></name>
+                <description></description>
+                <department_id id = "">
+                    <name></name>
+                </department_id>
+            </major_id>
+            <contact_info_id id  = "1">
+                <first_name>Alex</first_name>
+                <last_name>Bold</last_name>
+                <email>alexbold@email.com</email>
+                <address>123 Sunny Rd</address>
+                <phone_number>123-456-4566</phone_number>
+            </contact_info_id>
+        </student>
+    </students>
+    <contact_information>
+        <contact_info1 id = "1">
+            <first_name>Alex</first_name>
+            <last_name>Bold</last_name>
+            <email>alexbold@email.com</email>
+            <address>123 Sunny Rd</address>
+            <phone_number>123-456-4566</phone_number>
+        </contact_info1>
+    </contact_information>
+    <exams>
+        <exam>
+            <id>123</id>
+            <name>Midterm</name>
+            <date>2002-03-15</date>
+            <course_id>3</course_id>
+        </exam>
+    </exams>
+    <exam_grades>
+        <exam_grade id = "1">
+            <grade>85</grade>
+            <exam_id>123</exam_id>
+            <student_id id = "01">
+                <name>Alex Bold</name>
+                <admission_date>2002-09-01</admission_date>
+                <user_id>1</user_id>
+                <major_id>1</major_id>
+                <contact_info_id>1</contact_info_id>
+            </student_id>
+        </exam_grade>
+    </exam_grades>
+</university>
