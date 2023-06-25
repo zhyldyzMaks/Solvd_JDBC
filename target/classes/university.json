@@ -1,0 +1,104 @@
+{
+  "assignments": [
+    {
+      "id": 1,
+      "name": "Assignment 1",
+      "dueDate": "2023-05-15",
+      "max_score": 10,
+      "class_id": {
+        "id": 1,
+        "room_number": "A101",
+        "schedule": "Monday, 9:00 - 11:00 AM",
+        "course_id": {
+          "id": 1,
+          "name": "Introduction to Programming",
+          "credits": 3,
+          "department_id": {
+            "id": 2,
+            "name": "School of Engineering"
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "name": "Assignment 2",
+      "dueDate": "2023-06-01",
+      "score": 100,
+      "class_id": {
+        "id": 2,
+        "room_number": "B202",
+        "schedule": "Wednesday, 2:00 - 4:00 PM",
+        "course_id": {
+          "id": 2,
+          "name": "Data Structure",
+          "credits": 4,
+          "department_id": {
+            "id": 2,
+            "name": "School of Engineering"
+          }
+        }
+      }
+    }
+  ],
+  "departments": [
+    {
+      "id": 1,
+      "name":  "Social Studies Department"
+    },
+    {
+      "id": 2,
+      "name":  "School of Engineering"
+    }
+  ],
+  "majors": [
+    {
+      "id": 1,
+      "name": "Psychology",
+      "description": "The scientific study of the human mind and behavior.",
+      "department_id": {
+        "id": 1,
+        "name": "Social Studies Department"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Computer Science",
+      "description": "A field of study that focuses on programming, and software development. ",
+      "department_id": {
+        "id": 2,
+        "name": "School of Engineering"
+      }
+    }
+  ],
+  "contact_information": [
+    {
+      "id": 1,
+      "first_name": "Alex",
+      "last_name": "Bold",
+      "email": "alexbold@yahoo.com",
+      "address": "123 Deer Rd",
+      "phone_number": "123-456-7890"
+    },
+    {
+      "id": 2,
+      "first_name": "Anita",
+      "last_name": "Tsoi",
+      "email": "anitatsoi@yahoo.com",
+      "address": "123 Main St",
+      "phone_number": "123-456-0987"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "username": "Alex",
+      "password": "alex123"
+    },
+    {
+      "id": 2,
+      "username": "Amita",
+      "password": "amita321"
+    }
+  ]
+}

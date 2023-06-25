@@ -1,20 +1,18 @@
 package com.solvd.db.mysql.model;
 
-import com.solvd.db.utils.DateAdapter;
+import com.solvd.db.utils.JAXBDateAdapter;
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import java.sql.Date;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "exam")
-
 public class Exam {
     @XmlAttribute
     private long id;
     @XmlElement
     private String name;
     @XmlElement
-    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlJavaTypeAdapter(JAXBDateAdapter.class)
     private Date date;
     @XmlElement
     private Course course;

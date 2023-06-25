@@ -1,20 +1,26 @@
 package com.solvd.db.mysql.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.xml.bind.annotation.*;
-
 import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "course")
 public class Course {
     @XmlAttribute
+    @JsonProperty("id")
     private long id;
     @XmlElement
+    @JsonProperty("name")
     private String name;
     @XmlElement
+    @JsonProperty("credits")
     private int credits;
+    @JsonProperty("department_id")
     private Department departmentId;
     @XmlElementWrapper(name = "examList")
     @XmlElement(name = "exam")
+    @JsonIgnore
     private List<Exam> examList;
 
     public Course(){}

@@ -1,12 +1,11 @@
 package com.solvd.db.utils;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-
 import java.text.ParseException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-public class DateAdapter extends XmlAdapter<String, Date> {
+public class JAXBDateAdapter extends XmlAdapter<String, Date> {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override

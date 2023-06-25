@@ -1,9 +1,15 @@
 package com.solvd.db.mysql.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ClassTable {
+    @JsonProperty("id")
     private long id;
+    @JsonProperty("room_number")
     private String roomNumber;
+    @JsonProperty("schedule")
     private String schedule;
+    @JsonProperty("course_id")
     private Course courseId;
 
     public ClassTable(){}

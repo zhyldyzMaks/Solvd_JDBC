@@ -1,7 +1,13 @@
 package com.solvd.db.mysql.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+
+@JsonRootName(value = "department")
 public class Department {
+    @JsonProperty("id")
     private long id;
+    @JsonProperty("name")
     private String name;
 
     public Department(){}
