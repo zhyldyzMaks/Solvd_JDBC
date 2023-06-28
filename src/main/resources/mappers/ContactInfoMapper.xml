@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.db.mysql.mapper.ContactInfoMapper">
+
+    <resultMap id="contactInfoResultMap" type="com.solvd.db.mysql.model.ContactInformation" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="email" column="email"/>
+        <result property="address" column="address"/>
+        <result property="phoneNumber" column="phone_number"/>
+    </resultMap>
+
+    <select id="getContactInfoById" resultMap="contactInfoResultMap">
+        select * from contact_information where id = #{id}
+    </select>
+
+    <insert id="createContactInfo" parameterType="com.solvd.db.mysql.model.ContactInformation">
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into contact_information (first_name, last_name, email, address, phone_number)
+        values (#{name}, #{lastName}, #{email}, #{address}, #{phoneNumber})
+    </insert>
+
+    <update id="updateContactInformation" parameterType="com.solvd.db.mysql.model.ContactInformation">
+        update contact_information set
+        first_name = #{name},
+        last_name = #{lastName},
+        email = #{email},
+        address = #{address}
+        phone_number = #{phoneNumber}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteContactInformation" parameterType="long">
+        delete from contact_information where id = #{id}
+    </delete>
+
+</mapper>

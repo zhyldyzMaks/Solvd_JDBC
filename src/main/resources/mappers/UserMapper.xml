@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.db.mysql.mapper.UserMapper">
+
+    <resultMap id="userResultMap" type="com.solvd.db.mysql.model.User" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+    </resultMap>
+
+    <select id="getUserById" resultMap="userResultMap">
+        select * from users where id = #{id}
+    </select>
+
+    <select id="getAllUsers" resultMap="userResultMap">
+        select * from users
+    </select>
+
+    <insert id="createUser" parameterType="com.solvd.db.mysql.model.User">
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into users (username, password)
+        values (#{username}, #{password})
+    </insert>
+
+    <update id="updateUser" parameterType="com.solvd.db.mysql.model.User">
+        update users set
+        username = #{username},
+        password = #{password},
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="long">
+        delete from users where id = #{id}
+    </delete>
+
+</mapper>

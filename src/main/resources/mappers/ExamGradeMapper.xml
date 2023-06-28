@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.db.mysql.mapper.ExamGradeMapper">
+
+    <resultMap id="examGradeResultMap" type="com.solvd.db.mysql.model.ExamGrade" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="grade" column="grade"/>
+        <result property="studentId" column="student_id"/>
+        <association property="examId" resultMap="examResultMap">
+            <id property="id" column="exam_id"/>
+            <result property="name" column="name"/>
+            <result property="date" column="date"/>
+            <association property="courseId" resultMap="courseResultMap">
+                <id property="id" column="course_id"/>
+                <result property="name" column="course_name"/>
+                <result property="credits" column="course_credits"/>
+                <association property="departmentId" resultMap="departmentResultMap">
+                    <id property="id" column="department_id"/>
+                    <result property="name" column="department_name"/>
+                </association>
+            </association>
+        </association>
+    </resultMap>
+
+    <select id="examGradeById" resultMap="examGradeResultMap">
+        select * from exam_grades where id = #{id}
+    </select>
+
+    <select id="getAllExamGrades" resultMap="examGradeResultMap">
+        select * from exam_grades
+    </select>
+
+    <insert id="createExamGrade" parameterType="com.solvd.db.mysql.model.ExamGrade">
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into exam_grades (grade, exam_id, student_id)
+        values (#{grade}, #{examId.id}, #{studentId.id})
+    </insert>
+
+    <update id="updateExamGrade" parameterType="com.solvd.db.mysql.model.ExamGrade">
+        update exam_grades set
+        grade = #{grade},
+        exam_id = #{examId.id},
+        student_id = #{studentId.id}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteExamGrades" parameterType="long">
+        delete from exam_grades where id = #{id}
+    </delete>
+
+</mapper>

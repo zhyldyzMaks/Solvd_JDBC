@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.db.mysql.mapper.StudentMapper">
+
+    <resultMap id="studentResultMap" type="com.solvd.db.mysql.model.Student" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="admissionDate" column="admission_date"/>
+        <association property="userId" resultMap="userResultMap">
+            <id property="id" column="id"/>
+            <result property="username" column="username"/>
+            <result property="password" column="password"/>
+        </association>
+        <association property="majorId" column="major_id">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="description" column="description"/>
+            <association property="departmentId" resultMap="departmentResultMap">
+                <id property="id" column="id"/>
+                <result property="name" column="name"/>
+            </association>
+        </association>
+        <association property="contactInfoId" column="contact_info_id">
+            <id property="id" column="id"/>
+            <result property="name" column="first_name"/>
+            <result property="lastName" column="last_name"/>
+            <result property="email" column="email"/>
+            <result property="address" column="address"/>
+            <result property="phoneNumber" column="phone_number"/>
+        </association>
+    </resultMap>
+
+    <select id="studentById" resultMap="studentResultMap">
+        select * from students where id = #{id}
+    </select>
+
+    <select id="getStudentByName" resultMap="studentResultMap">
+        select * from students where name = #{name}
+    </select>
+
+    <select id="getStudentByUserId" resultMap="studentResultMap">
+        select * from students where user_id = #{userId}
+    </select>
+
+    <select id="getAllStudents" resultMap="studentResultMap">
+        select * from students
+    </select>
+
+    <insert id="createStudent" parameterType="com.solvd.db.mysql.model.Student">
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into students (name, admission_date, user_id, major_id, contact_info_id)
+        values (#{name}, #{admissionDate}, #{userId.id}, #{majorId.id}, #{contactInfoId.id})
+    </insert>
+
+    <update id="updateStudent" parameterType="com.solvd.db.mysql.model.Student">
+        update students set
+        name = #{name},
+        admission_date = #{admissionDate},
+        user_id = #{userId.id}
+        major_id = #{majorId.id}
+        contact_info_id = #{contactInfoId.id}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteStudent" parameterType="long">
+        delete from students where id = #{id}
+    </delete>
+</mapper>
