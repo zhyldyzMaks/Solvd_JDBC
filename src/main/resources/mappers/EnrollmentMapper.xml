@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.db.mysql.mapper.EnrollmentMapper">
+
+    <resultMap id="enrollmentResultMap" type="com.solvd.db.mysql.model.Enrollment" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="date" column="date"/>
+        <result property="studentId" column="student_id"/>
+        <association property="courseId" resultMap="courseResultMap">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="credits" column="credits"/>
+            <association property="departmentId" resultMap="departmentResultMap">
+                <id property="id" column="id"/>
+                <result property="name" column="name"/>
+            </association>
+        </association>
+    </resultMap>
+
+    <select id="enrollmentById" resultMap="enrollmentResultMap">
+        select * from enrollments where id = #{id}
+    </select>
+
+    <select id="getAllEnrollments" resultMap="enrollmentResultMap">
+        select * from enrollments
+    </select>
+
+    <insert id="createEnrollment" parameterType="com.solvd.db.mysql.model.Enrollment">
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into enrollments (date, student_id, course_id)
+        values (#{date}, #{studentId.id}, #{courseId.id})
+    </insert>
+
+    <update id="updateEnrollment" parameterType="com.solvd.db.mysql.model.Enrollment">
+        update enrollments set
+        date = #{date},
+        student_id = #{studentId.id},
+        course_id = #{courseId.id}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEnrollment" parameterType="long">
+        delete from enrollments where id = #{id}
+    </delete>
+
+</mapper>

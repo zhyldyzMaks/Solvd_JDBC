@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.db.mysql.mapper.MajorMapper">
+
+    <resultMap id="majorResultMap" type="com.solvd.db.mysql.model.Major" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <association property="departmentId" resultMap="departmentResultMap">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+
+    <select id="getMajorById" resultMap="majorResultMap">
+        select * from majors where id = #{id}
+    </select>
+
+    <select id="getAllMajors" resultMap="majorResultMap">
+        select * from majors
+    </select>
+
+    <insert id="createMajor" parameterType="com.solvd.db.mysql.model.Major">
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into majors (name, description, department_id)
+        values (#{name}, #{description}, #{departmentId.id})
+    </insert>
+
+    <update id="updateMajor" parameterType="com.solvd.db.mysql.model.Major">
+        update majors set
+        name = #{name},
+        description = #{description},
+        department_id = #{departmentId.id}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMajor" parameterType="long">
+        delete from majors where id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.db.mysql.mapper.AssignmentMapper">
+
+    <resultMap id="assignmentResultMap" type="com.solvd.db.mysql.model.Assignment" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="dueDate" column="due_date"/>
+        <result property="maxScore" column="score"/>
+        <association property="classId" resultMap="classResultMap">
+            <id property="id" column="id"/>
+            <result property="roomNumber" column="room_number"/>
+            <result property="schedule" column="schedule"/>
+            <association property="courseId" resultMap="courseResultMap">
+                <id property="id" column="id"/>
+                <result property="name" column="name"/>
+                <result property="credits" column="credits"/>
+                <association property="departmentId" resultMap="departmentResultMap">
+                    <id property="id" column="id"/>
+                    <result property="name" column="name"/>
+                </association>
+            </association>
+        </association>
+    </resultMap>
+
+    <select id="getAssignmentById" resultMap="assignmentResultMap">
+        select * from assignments where id = #{id}
+    </select>
+
+    <select id="getAllAssignments" resultMap="assignmentResultMap">
+        select * from assignments
+    </select>
+
+    <insert id="createAssignment" parameterType="com.solvd.db.mysql.model.Assignment">
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into assignments (name, due_date, score, class_id)
+        values (#{name}, #{dueDate}, #{maxScore}, #{classId.id})
+    </insert>
+
+    <update id="updateAssignment" parameterType="com.solvd.db.mysql.model.Assignment">
+        update assignments set
+        name = #{name},
+        due_date = #{dueDate},
+        score = #{maxScore},
+        class_id = #{classId.id}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAssignment" parameterType="long">
+        delete from assignments where id = #{id}
+    </delete>
+
+</mapper>

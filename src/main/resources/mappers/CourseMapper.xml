@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.db.mysql.mapper.CourseMapper">
+
+    <resultMap id="courseResultMap" type="com.solvd.db.mysql.model.Course" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="credits" column="credits"/>
+        <association property="departmentId" resultMap="departmentResultMap">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+
+    <select id="getCourseById" resultMap="courseResultMap">
+        select * from courses where id = #{id}
+    </select>
+
+    <select id="getAllCourses" resultMap="courseResultMap">
+        select * from courses
+    </select>
+
+    <insert id="createCourse" parameterType="com.solvd.db.mysql.model.Course">
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into courses (name, credits, department_id)
+        values (#{name}, #{credits}, #{departmentId.id})
+    </insert>
+
+    <update id="updateCourse" parameterType="com.solvd.db.mysql.model.Course">
+        update courses set
+        name = #{name},
+        credits = #{credits},
+        department_id = #{departmentId.id}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCourses" parameterType="long">
+        delete from courses where id = #{id}
+    </delete>
+
+</mapper>
