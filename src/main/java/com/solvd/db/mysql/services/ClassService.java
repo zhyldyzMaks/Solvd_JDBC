@@ -1,40 +1,41 @@
 package com.solvd.db.mysql.services;
 
 import com.solvd.db.mysql.dao.GetAllInterface;
-import com.solvd.db.mysql.dao.classes.ClassDAO;
+import com.solvd.db.mysql.mapper.ClassMapper;
 import com.solvd.db.mysql.model.ClassTable;
 import com.solvd.db.utils.GenericDAO;
+import org.apache.ibatis.session.SqlSessionFactory;
 import java.util.List;
 
 public class ClassService implements GenericDAO<ClassTable>, GetAllInterface<ClassTable> {
-    private ClassDAO classDAO;
+    private final ClassMapper classMapper;
 
-    public ClassService(){
-        classDAO = new ClassDAO();
+    public ClassService(SqlSessionFactory sqlSessionFactory){
+        classMapper = sqlSessionFactory.openSession().getMapper(ClassMapper.class);
     }
 
     @Override
     public List<ClassTable> getAll() {
-        return classDAO.getAll();
+        return classMapper.getAllClasses();
     }
 
     @Override
     public boolean create(ClassTable classTable) {
-        return classDAO.create(classTable);
+        return classMapper.createClass(classTable);
     }
 
     @Override
     public ClassTable getById(long id) {
-        return classDAO.getById(id);
+        return classMapper.getClassById(id);
     }
 
     @Override
     public boolean update(ClassTable classTable) {
-        return classDAO.update(classTable);
+        return classMapper.updateClass(classTable);
     }
 
     @Override
     public boolean delete(long id) {
-        return classDAO.delete(id);
+        return classMapper.deleteClass(id);
     }
 }

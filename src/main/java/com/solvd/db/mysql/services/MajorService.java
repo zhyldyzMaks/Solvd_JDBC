@@ -1,40 +1,41 @@
 package com.solvd.db.mysql.services;
 
 import com.solvd.db.mysql.dao.GetAllInterface;
-import com.solvd.db.mysql.dao.classes.MajorDAO;
+import com.solvd.db.mysql.mapper.MajorMapper;
 import com.solvd.db.mysql.model.Major;
 import com.solvd.db.utils.GenericDAO;
+import org.apache.ibatis.session.SqlSessionFactory;
 import java.util.List;
 
 public class MajorService implements GenericDAO<Major>, GetAllInterface<Major> {
-    private MajorDAO majorDAO;
+    private final MajorMapper majorMapper;
 
-    public MajorService(){
-        majorDAO = new MajorDAO();
+    public MajorService(SqlSessionFactory sqlSessionFactory){
+        majorMapper = sqlSessionFactory.openSession().getMapper(MajorMapper.class);
     }
 
     @Override
     public List<Major> getAll() {
-        return majorDAO.getAll();
+        return majorMapper.getAllMajors();
     }
 
     @Override
     public boolean create(Major major) {
-        return majorDAO.create(major);
+        return majorMapper.createMajor(major);
     }
 
     @Override
     public Major getById(long id) {
-        return majorDAO.getById(id);
+        return majorMapper.getMajorById(id);
     }
 
     @Override
     public boolean update(Major major) {
-        return majorDAO.update(major);
+        return majorMapper.updateMajor(major);
     }
 
     @Override
     public boolean delete(long id) {
-        return majorDAO.delete(id);
+        return majorMapper.deleteMajor(id);
     }
 }

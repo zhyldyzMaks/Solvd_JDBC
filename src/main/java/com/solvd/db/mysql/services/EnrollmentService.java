@@ -1,40 +1,41 @@
 package com.solvd.db.mysql.services;
 
 import com.solvd.db.mysql.dao.GetAllInterface;
-import com.solvd.db.mysql.dao.classes.EnrollmentDAO;
+import com.solvd.db.mysql.mapper.EnrollmentMapper;
 import com.solvd.db.mysql.model.Enrollment;
 import com.solvd.db.utils.GenericDAO;
+import org.apache.ibatis.session.SqlSessionFactory;
 import java.util.List;
 
 public class EnrollmentService implements GenericDAO<Enrollment>, GetAllInterface<Enrollment> {
-    private EnrollmentDAO enrollmentDAO;
+    private final EnrollmentMapper enrollmentMapper;
 
-    public EnrollmentService(){
-        enrollmentDAO =  new EnrollmentDAO();
+    public EnrollmentService(SqlSessionFactory sqlSessionFactory){
+        enrollmentMapper =  sqlSessionFactory.openSession().getMapper(EnrollmentMapper.class);
     }
 
     @Override
     public List<Enrollment> getAll() {
-        return enrollmentDAO.getAll();
+        return enrollmentMapper.getAllEnrollments();
     }
 
     @Override
     public boolean create(Enrollment enrollment) {
-        return enrollmentDAO.create(enrollment);
+        return enrollmentMapper.createEnrollment(enrollment);
     }
 
     @Override
     public Enrollment getById(long id) {
-        return enrollmentDAO.getById(id);
+        return enrollmentMapper.getEnrollmentById(id);
     }
 
     @Override
     public boolean update(Enrollment enrollment) {
-        return enrollmentDAO.update(enrollment);
+        return enrollmentMapper.updateEnrollment(enrollment);
     }
 
     @Override
     public boolean delete(long id) {
-        return enrollmentDAO.delete(id);
+        return enrollmentMapper.deleteEnrollment(id);
     }
 }
